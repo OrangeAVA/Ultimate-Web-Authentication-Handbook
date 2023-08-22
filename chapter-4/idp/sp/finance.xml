@@ -1,0 +1,15 @@
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2024-04-26T06:32:03.567Z" entityID="https://finance.mysrv.local:8445/saml/metadata">
+  <SPSSODescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2024-04-26T06:32:03.5673665Z" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true" WantAssertionsSigned="true">
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data xmlns="http://www.w3.org/2000/09/xmldsig#">
+          <X509Certificate xmlns="http://www.w3.org/2000/09/xmldsig#">MIIDozCCAougAwIBAgIUApGFYpJlA+tZ0WqbLbq9oRXeGMcwDQYJKoZIhvcNAQELBQAwYTELMAkGA1UEBhMCSU4xCzAJBgNVBAgMAktBMRIwEAYDVQQHDAlCQU5HQUxPUkUxDTALBgNVBAoMBEhPV0ExEDAOBgNVBAsMB2ZpbmFuY2UxEDAOBgNVBAMMB2ZpbmFuY2UwHhcNMjMwMzIxMTkyODQ4WhcNMjQwMzIwMTkyODQ4WjBhMQswCQYDVQQGEwJJTjELMAkGA1UECAwCS0ExEjAQBgNVBAcMCUJBTkdBTE9SRTENMAsGA1UECgwESE9XQTEQMA4GA1UECwwHZmluYW5jZTEQMA4GA1UEAwwHZmluYW5jZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMgxh4Ixi005fKGvKo9Atq+jxa4JImJz2okYYJr1EowkSXVy/qPIBGdEQtk8S+AULq/aJMMb9mX20bOskQ0NbdF2Xvj4iF5eEp1oFdzpxGQgy2V8rVrDDtqCArw+xL1kfKSMI4tB+9v8SuF5XsigDYzNQJNhUe5M5R03BDIE/tE7f/cMGbRi71WURQXEjvqtJuf04mO2z7cOJ8PCAjYgWLtJs9maSpE2h/CVm7miv0MOcKNtQMZoiApjC3MwWLfarM/ycKFbPWcsohZXnalc44eeQN3DpJxeZRdeUUHTLl2wMGI3zlVrb2g/KRaEAO91BnsSsqqZcR24ceLUwqEb0vMCAwEAAaNTMFEwHQYDVR0OBBYEFHZldCRuAb3jRCj11DrHjbsv1VMeMB8GA1UdIwQYMBaAFHZldCRuAb3jRCj11DrHjbsv1VMeMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAI/Mdpdbn9bmx0Rb55X6QlePoMypKIeRykT2R0TK98ID6EnuEBv3tcp2gkD4wY6BM43ryg0QYSIVj+m28g5zA6Mf0OiMBGSMpJI9Me7M823hCDJGctKdPU7jCvQw7HRnsmsH5+yuPmC4U8oMLzmxV+zlobxMvKr/0aBTpLE9m/vC90mbq4FrfZ1+JXux+v8n40cP0B/7O4+nJiM+mg8WqEmTIXUxUDljWFjV8OdHk5QeWhWLh0YoxfxnljFCjMnjMDGrHIl+uh+C4D6RwKwe7p9MFyP29TQQMRrNpsUQythEbsjG8dt/dDGlXQu2K9B1ssF4TD1FptCnPMGbbDI0FLU=</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+    <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://finance.mysrv.local:8445/saml/slo" ResponseLocation="https://finance.mysrv.local:8445/saml/slo"></SingleLogoutService>
+    <NameIDFormat></NameIDFormat>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://finance.mysrv.local:8445/saml/acs" index="1"></AssertionConsumerService>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://finance.mysrv.local:8445/saml/acs" index="2"></AssertionConsumerService>
+  </SPSSODescriptor>
+</EntityDescriptor>
