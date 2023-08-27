@@ -1,6 +1,14 @@
 # Hands-On Web Authentication
 
-## VS Code Launch Scripts
+## VS Code 
+
+Open the folder in Visual Studio Code. All the sample codes for each chapter are
+in separate folders. 
+
+![Opening the folder in VS Code](vscode.gif)
+
+### Launch Scripts
+
 Launch scripts (`.vscode/launch.json`)are available for all the code samples 
 from Chapter-1 to 5. 
 
