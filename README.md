@@ -3,7 +3,7 @@
 ## VS Code 
 
 Open the folder in Visual Studio Code. All the sample codes for each chapter are
-in separate folders. 
+in their respective folders. 
 
 ![Opening the folder in VS Code](vscode.gif)
 
