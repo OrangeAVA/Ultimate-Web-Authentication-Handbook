@@ -1,4 +1,4 @@
-# Hands-On Web Authentication
+# Ultimate Web Authentication Handbook
 
 ## VS Code 
 
