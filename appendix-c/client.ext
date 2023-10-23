@@ -1,4 +1,0 @@
-basicConstraints = CA:false
-keyUsage = digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
-extendedKeyUsage = clientAuth
-subjectAltName = email:alice@mysrv.local
