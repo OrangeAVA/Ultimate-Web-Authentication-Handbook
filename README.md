@@ -1,4 +1,37 @@
-# Ultimate Web Authentication Handbook
+## Ultimate Web Authentication Handbook
+
+
+This is the repository for [Ultimate Web Authentication Handbook
+](https://orangeava.com/products/ultimate-web-authentication-handbook), published by Orange AVA™
+
+
+## About the Book
+In today's digital landscape, web apps evolve rapidly, demanding enhanced security. This Ultimate Web Authentication Handbook offers a comprehensive journey into this realm. Beginning with web authentication basics, it builds a strong foundation. You'll explore cryptography fundamentals, essential for secure authentication. The book delves into the connection between authentication and network security, mastering federated authentication via OAuth and OIDC protocols. 
+
+You'll also harness multi factor authentication's power and stay updated on advanced trends. The book expands on deepening your understanding of Java Web Token (JWT), FIDO 2, WebAuthn, and biometric authentication to fortify web apps against multifaceted threats. Moreover, you'll learn to use Identity and Access Management (IAM) solutions for constructing highly secure systems. Whether you're a developer, security enthusiast, or simply curious about web security, this book unlocks the secrets of secure online interactions.
+
+## What you will learn
+
+● Comprehend Web Application Architectures and Enhance Security Measures. 
+
+● Implement Robust Web Security with Public Key Cryptography. 
+
+● Harness SAML, OAuth, and OIDC for Advanced User Authentication and Authorization. 
+
+● Strengthen Web App Security with Multi Factor Authentication. Transition to Passwordless Authentication with FIDO and Biometric Security. 
+
+● Stay Ahead with Insights into Digital Identity, Biometric Authentication, Post-Quantum Cryptography, and Zero Trust Architecture Trends.
+
+
+## More products
+1. [Ultimate Blockchain Security Handbook](https://orangeava.com/products/ultimate-blockchain-security-handbook?pr_prod_strat=use_description&pr_rec_id=2c5398f59&pr_rec_pid=8070704234714&pr_ref_pid=8091329954010&pr_seq=uniform)
+
+2. [Ultimate Neural Network Programming with Python](https://orangeava.com/products/ultimate-neural-network-programming-with-python?_pos=1&_sid=a96e61c00&_ss=r)
+
+3. [Practical Java Programming with ChatGPT](https://orangeava.com/products/practical-java-programming-with-chatgpt?_pos=2&_sid=a96e61c00&_ss=r)
+
+## Visit Website 
+[ORANGE AVA™](https://orangeava.com)
 
 ## VS Code 
 
