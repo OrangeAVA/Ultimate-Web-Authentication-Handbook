@@ -1,6 +1,6 @@
 /*
 Chapter-5: Federated Authentication-II
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This sample code shows the authorization code grant in OAuth 2.
 

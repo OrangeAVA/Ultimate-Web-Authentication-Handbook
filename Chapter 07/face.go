@@ -1,6 +1,6 @@
 /*
 Chapter-7: Advanced Trends in Authentication
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This sample code shows the matching of two face images.
 

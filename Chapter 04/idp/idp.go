@@ -1,6 +1,6 @@
 /*
 Chapter-4: Federated Authentication-I
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 # Add these values to the /etc/hosts file.
 # On Windows, the file can be: C:\Windows\System32\drivers\etc\hosts

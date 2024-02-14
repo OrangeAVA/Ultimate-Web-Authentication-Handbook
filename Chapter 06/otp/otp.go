@@ -1,6 +1,6 @@
 /*
 Chapter-6: Multifactor Authentication
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This sample code shows the HOTP and TOTP registration and validation workflows.
 

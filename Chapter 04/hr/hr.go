@@ -1,6 +1,6 @@
 /*
 Chapter-4: Federated Authentication-I
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This code represents the HR App in the demo discussed in the book. The
 application implements a SAML SP and requires a SAML IDP to run.

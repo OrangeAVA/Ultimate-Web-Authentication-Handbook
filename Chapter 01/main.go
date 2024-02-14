@@ -1,11 +1,11 @@
 /*
 
 Chapter-1: Introduction to Web Authentication
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
-This sample code helps you understand HTTP handlers and simple authentication methods. 
+This sample code helps you understand HTTP handlers and simple authentication methods.
 
-Launch the application with the command: 
+Launch the application with the command:
 go run ./main.go
 
 The website runs at http://localhost:8080.
@@ -13,18 +13,17 @@ The website runs at http://localhost:8080.
 The website exposes the following endpoints:
 
 /hello - it responds with a "Hello, World" message to the screen.
-/count - it shows the importance of cookies. Every time you visit this endpoint, it 
+/count - it shows the importance of cookies. Every time you visit this endpoint, it
      reports how many times you visited the URL.
-/session - implements the counter using a session cookie. The session cookie makes 
-     the counter transparent to the client. 
-/basicauth - implements the basic authentication scheme of HTTP. You can use jdoe as 
-     the username and password as the password to authenticate. 
-/resource - when you try to access this URL, it redirects to the /login URL and 
-     presents a form. You can provide jdoe as the username and password as the password 
-     to authenticate. The scheme utilizes the session cookie to maintain 
+/session - implements the counter using a session cookie. The session cookie makes
+     the counter transparent to the client.
+/basicauth - implements the basic authentication scheme of HTTP. You can use jdoe as
+     the username and password as the password to authenticate.
+/resource - when you try to access this URL, it redirects to the /login URL and
+     presents a form. You can provide jdoe as the username and password as the password
+     to authenticate. The scheme utilizes the session cookie to maintain
      post-authentication sessions.
 */
-
 
 package main
 

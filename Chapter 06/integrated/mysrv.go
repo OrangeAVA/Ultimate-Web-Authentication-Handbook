@@ -1,6 +1,6 @@
 /*
 Chapter-6: Multifactor Authentication
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This demo shows how to run an OAuth 2 server with TOTP and WebAuthn as
 authenticators. The user alice has a temporary password (password). She

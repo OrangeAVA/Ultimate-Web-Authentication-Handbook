@@ -1,6 +1,6 @@
 REM ------------------------------------------
 Appendix-C: TLS Certification Creation
-Ultimate Web Authentication Handbook by Sambit Kumar 
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 The following OpenSSL commands create a certificate chain for a TLS server.
 - Create an RSA key pair.

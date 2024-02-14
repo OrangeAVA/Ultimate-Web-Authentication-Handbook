@@ -1,6 +1,6 @@
 /*
 Chapter-5: Federated Authentication-II
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 This sample code shows the PKCE code grant and token refresh using OAuth 2.
 
