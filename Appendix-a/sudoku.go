@@ -1,12 +1,12 @@
 /*
 
 Appendix-A: The Go Programming Language Reference
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
-This sample code is from the examples of "https://github.com/gonutz/sudoku." 
-If you want to use a package in your code, you create your module and import 
-the package there. You can use this sample file by creating your module and 
-adding this file as part of the module. 
+This sample code is from the examples of "https://github.com/gonutz/sudoku."
+If you want to use a package in your code, you create your module and import
+the package there. You can use this sample file by creating your module and
+adding this file as part of the module.
 
 */
 

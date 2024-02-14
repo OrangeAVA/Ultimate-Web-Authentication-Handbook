@@ -1,18 +1,18 @@
 /*
 
 Chapter-2: Fundamentals of Cryptography
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 Start the server with the command: go run ./server.go
-Access the website by typing the URL http://localhost:8080/basicauth 
-on the browser. 
-- The passwords are stored in the system in a password file as hashed keys. 
-- We use PBKDF2 to generate the keys and store them in the binhex format in 
-the password.json file. 
-- The user provides jdoe as the username and password as the password. We 
-generate the PBKDF2 of the password and compare it with the value stored in 
-the password.json file. 
-- On success, the browser shows the success message. 
+Access the website by typing the URL http://localhost:8080/basicauth
+on the browser.
+- The passwords are stored in the system in a password file as hashed keys.
+- We use PBKDF2 to generate the keys and store them in the binhex format in
+the password.json file.
+- The user provides jdoe as the username and password as the password. We
+generate the PBKDF2 of the password and compare it with the value stored in
+the password.json file.
+- On success, the browser shows the success message.
 */
 
 package main

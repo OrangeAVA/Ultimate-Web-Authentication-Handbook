@@ -1,27 +1,27 @@
 /*
 
 Chapter-3: Authentication with Network Security
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
-# Add these values to the /etc/hosts file. 
+# Add these values to the /etc/hosts file.
 # On Windows, the file can be: C:\Windows\System32\drivers\etc\hosts
 127.0.0.5 mysrv.local
 
 Start the server with the command: go run ./main.go
 
-Import the certs/client/sroot.crt root certificate into your browser's trusted 
+Import the certs/client/sroot.crt root certificate into your browser's trusted
 roots before accessing the website. The chapter describes the steps.
 
 Access the website by typing the URL https://mysrv.local:8443
 
-The server exposes the following endpoints. 
+The server exposes the following endpoints.
 /hello - it responds with a "Hello, World" message to the screen.
-/basicauth - implements the basic authentication scheme of HTTP. You can use 
+/basicauth - implements the basic authentication scheme of HTTP. You can use
 jdoe as the username and password as the password to authenticate.
 /certauth - You should set the CLIENT_AUTH = true in the main method before
-you activate this endpoint. You can authenticate using the client certificate 
-in the certs/alice.p12 file. Please follow the steps in the book to import 
-the certificate to your machine/browser. 
+you activate this endpoint. You can authenticate using the client certificate
+in the certs/alice.p12 file. Please follow the steps in the book to import
+the certificate to your machine/browser.
 
 */
 

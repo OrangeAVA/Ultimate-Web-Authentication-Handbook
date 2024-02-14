@@ -1,6 +1,6 @@
 /*
 Chapter-6: Multifactor Authentication
-Hands-On Web Authentication by Sambit Kumar Dash
+Ultimate Web Authentication Handbook by Sambit Kumar Dash
 
 The server provides a OAuth authentication server for registration and
 authentication with TOTP and WebAuthn.The frontend code is generated using
