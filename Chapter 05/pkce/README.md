@@ -68,7 +68,7 @@ successful. Both steps A and B involve a web browser as an intermediary.
        +--------+                                | +---------------+ |
                                                  +-------------------+
 
-                     Figure 2: Abstract Protocol Flow
+                     RFC 7636 Figure 2: Abstract Protocol Flow
 ```
 In the book, we combine Figures 1 and 2 and suggest a workflow from a native
 client in a secured workflow as Figure 5.9. 
