@@ -20,7 +20,7 @@ The server exposes the following endpoints.
 jdoe as the username and password as the password to authenticate.
 /certauth - You should set the CLIENT_AUTH = true in the main method before
 you activate this endpoint. You can authenticate using the client certificate
-in the certs/alice.p12 file. Please follow the steps in the book to import
+in the certs/client/alice.p12 file. Please follow the steps in the book to import
 the certificate to your machine/browser.
 
 */
@@ -37,7 +37,7 @@ import (
 	"net/http"
 	"os"
 
-	"golang.org/x/crypto/pkcs12"
+	"github.com/youmark/pkcs8"
 )
 
 func addHelloHandler() {
@@ -99,23 +99,44 @@ func configureClientAuth(tlsConfig *tls.Config) error {
 	return nil
 }
 
+func addCertificates(certpath string, c *tls.Certificate) (err error) {
+	var (
+		data  []byte
+		block *pem.Block
+	)
+	if data, err = os.ReadFile(certpath); err == nil {
+		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
+			if block.Type == "CERTIFICATE" {
+				c.Certificate = append(c.Certificate, block.Bytes)
+			}
+		}
+	}
+	return
+}
+
 /*
 Server certificate
 */
-func getTLSCert() (c *tls.Certificate, err error) {
+func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certificate, err error) {
 	var (
-		fdata  []byte
-		blocks []*pem.Block
-		cert   tls.Certificate
+		data  []byte
+		block *pem.Block
+		cert  tls.Certificate
 	)
-	if fdata, err = os.ReadFile("certs/server/mysrv.p12"); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			var pemData []byte
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
+
+	if err = addCertificates(certpath, &cert); err == nil {
+		if err = addCertificates(capath, &cert); err == nil {
+			if data, err = os.ReadFile(keypath); err == nil {
+				if block, _ = pem.Decode(data); block != nil {
+					if cert.PrivateKey, _, err = pkcs8.ParsePrivateKey(block.Bytes, keypass); err == nil {
+						if cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0]); err == nil {
+							c = &cert
+						}
+					}
+				} else {
+					err = fmt.Errorf("no private key data found")
+				}
 			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-			c = &cert
 		}
 	}
 	return
@@ -128,7 +149,11 @@ func main() {
 	addHelloHandler()
 	addBasicAuthHandler()
 
-	cert, err := getTLSCert()
+	cert, err := getTLSCert(
+		"certs/server/scas.crt",
+		"certs/server/mysrv.local.crt",
+		"certs/server/mysrv.local.key",
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}

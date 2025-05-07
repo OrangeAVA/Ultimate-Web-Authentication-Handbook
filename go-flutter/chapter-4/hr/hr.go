@@ -40,21 +40,62 @@ import (
 	"time"
 
 	"github.com/crewjam/saml/samlsp"
-	"golang.org/x/crypto/pkcs12"
+	"github.com/youmark/pkcs8"
 )
 
-func getProviderCertAndKey(certloc string) (key *rsa.PrivateKey, cert *x509.Certificate, err error) {
+func getProviderCertAndKey(certpath, keypath string, keypass []byte) (key *rsa.PrivateKey, cert *x509.Certificate, err error) {
+	var data []byte
+	if data, err = os.ReadFile(keypath); err == nil {
+		if block, _ := pem.Decode(data); block != nil {
+			if key, err = pkcs8.ParsePKCS8PrivateKeyRSA(block.Bytes, keypass); err != nil {
+				return
+			}
+		}
+	}
+	if data, err = os.ReadFile(certpath); err == nil {
+		if block, _ := pem.Decode(data); block != nil {
+			cert, err = x509.ParseCertificate(block.Bytes)
+		}
+	}
+	return
+}
+
+func addCertificates(certpath string, c *tls.Certificate) (err error) {
 	var (
-		fdata  []byte
-		blocks []*pem.Block
+		data  []byte
+		block *pem.Block
 	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				if b.Type == "CERTIFICATE" {
-					cert, err = x509.ParseCertificate(b.Bytes)
-				} else if b.Type == "PRIVATE KEY" {
-					key, err = x509.ParsePKCS1PrivateKey(b.Bytes)
+	if data, err = os.ReadFile(certpath); err == nil {
+		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
+			if block.Type == "CERTIFICATE" {
+				c.Certificate = append(c.Certificate, block.Bytes)
+			}
+		}
+	}
+	return
+}
+
+/*
+Server certificate
+*/
+func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certificate, err error) {
+	var (
+		data  []byte
+		block *pem.Block
+		cert  tls.Certificate
+	)
+
+	if err = addCertificates(certpath, &cert); err == nil {
+		if err = addCertificates(capath, &cert); err == nil {
+			if data, err = os.ReadFile(keypath); err == nil {
+				if block, _ = pem.Decode(data); block != nil {
+					if cert.PrivateKey, _, err = pkcs8.ParsePrivateKey(block.Bytes, keypass); err == nil {
+						if cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0]); err == nil {
+							c = &cert
+						}
+					}
+				} else {
+					err = fmt.Errorf("no private key data found")
 				}
 			}
 		}
@@ -62,25 +103,12 @@ func getProviderCertAndKey(certloc string) (key *rsa.PrivateKey, cert *x509.Cert
 	return
 }
 
-func getTLSCert(certloc string) (cert tls.Certificate, err error) {
-	var (
-		fdata   []byte
-		blocks  []*pem.Block
-		pemData []byte
-	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
-			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-		}
-	}
-	return
-}
-
-func setupTLSServer(certloc string, srvName string) *http.Server {
-	cert, err := getTLSCert(certloc)
+func setupTLSServer(srvName string) *http.Server {
+	cert, err := getTLSCert(
+		"certs/server/scas.crt",
+		fmt.Sprintf("certs/server/%s.crt", srvName),
+		fmt.Sprintf("certs/server/%s.key", srvName),
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}
@@ -88,7 +116,7 @@ func setupTLSServer(certloc string, srvName string) *http.Server {
 	tlsConfig := &tls.Config{
 		ServerName:   srvName,
 		MinVersion:   tls.VersionTLS13,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
 	return &http.Server{
@@ -113,7 +141,7 @@ func main() {
 		log.Default().Fatalf("Failed to download IDP metadata %v", err)
 	}
 
-	key, cert, err := getProviderCertAndKey("certs/hr.p12")
+	key, cert, err := getProviderCertAndKey("certs/hr.crt", "certs/hr.key", []byte("password"))
 	if err != nil {
 		panic(err)
 	}
@@ -196,6 +224,6 @@ func main() {
 			http.Error(w, "User not authenticated", http.StatusUnauthorized)
 		}
 	})
-	server := setupTLSServer("certs/ssl/hr.mysrv.local.p12", "hr.mysrv.local")
+	server := setupTLSServer("hr.mysrv.local")
 	log.Default().Fatal(server.ListenAndServeTLS("", ""))
 }

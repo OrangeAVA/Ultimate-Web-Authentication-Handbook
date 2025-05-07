@@ -39,8 +39,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-openssl/pkcs12"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/pkcs12"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )

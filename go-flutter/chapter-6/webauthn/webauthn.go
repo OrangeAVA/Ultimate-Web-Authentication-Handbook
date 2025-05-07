@@ -46,10 +46,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-openssl/pkcs12"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"golang.org/x/crypto/pkcs12"
 )
 
 func getTLSCert(certloc string) (cert tls.Certificate, err error) {

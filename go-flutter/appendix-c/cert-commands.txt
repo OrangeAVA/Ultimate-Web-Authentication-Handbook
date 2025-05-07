@@ -6,35 +6,75 @@ The following OpenSSL commands create a certificate chain for a TLS server.
 - Create an RSA key pair.
 - Sign the public key with a CA or own private key for the root self-sign 
   certificate and generate the PEM output. 
-- Annotate the certificate with the text data. 
+- Annotate the certificate with the text data. -text option will append the text
+ data. 
 Repeat the above steps for root, intermediate, and server certificates. 
 - Concatenate all the annotated certificates in one file and generate the 
   certificate chain for the server.  
 - Use the respective private key of the server and the certificate chain to 
   create the PKCS-12 file of the certificate and private key.
 
+OpenSSL 1.x is EOLed, so we use OpenSSL 3.x commands to generate the 
+certificates now. 
+
+p12 certificates use AES-256-CBC (not RC2-40-CBC) which is secured and default
+for OpenSSL 3.x.
+
+REM--------------------------------------------
+REM Root server certificate commands
 REM--------------------------------------------
 
-req -newkey rsa:2048 -days 365 -config ssl.cfg -keyout sroot.key -out sroot.csr
-x509 -in sroot.csr -days 365 -signkey sroot.key -CAcreateserial -out sroot.crt -extfile ca.ext -req
-x509 -in sroot.crt -text -out sroot.annot.crt
+req -newkey rsa:2048 -config ssl.cfg -keyout sroot.key -out sroot.csr -text
+x509 -in sroot.csr -days 365 -signkey sroot.key -out sroot.crt -extfile ca.ext -req -text
 
-req -newkey rsa:2048 -config ssl.cfg -keyout sint.key -out sint.csr
-x509 -in sint.csr -CA sroot.crt -CAkey sroot.key -days 365 -CAcreateserial -out sint.crt -extfile ica.ext -req
-x509 -in sint.crt -text -out sint.annot.crt
+req -newkey rsa:2048 -config ssl.cfg -keyout sint.key -out sint.csr -text
+x509 -in sint.csr -CA sroot.crt -CAkey sroot.key -days 365 -CAcreateserial -out sint.crt -extfile ica.ext -req -text
 
-req -newkey rsa:2048 -config ssl.cfg -keyout mysrv.local.key -out mysrv.local.csr
-x509 -in mysrv.local.csr -CA sint.crt -CAkey sint.key -days 365 -CAcreateserial -out mysrv.local.crt -extfile server.ext -req
-x509 -in mysrv.local.crt -text -out mysrv.local.annot.crt
+REM Concatenate the roots. 
 
 Windows Powershell
-Get-Content .\sroot.annot.crt,.\sint.annot.crt,.\mysrv.local.annot.crt | Out-file .\mysrv.local.comb.crt
-
+C:\> Get-Content .\sint.crt,.\sroot.crt | Out-file .\sroots.crt
 Linux
-cat sroot.annot.crt sint.annot.crt mysrv.local.annot.crt > mysrv.local.comb.crt
+$ cat sint.crt sroot.crt  > sroots.crt
 
-OpenSSL> pkcs12 -export -in mysrv.local.comb.crt -inkey mysrv.local.key -out mysrv.local.p12
-Enter pass phrase for mysrv.local.key:
-Enter Export Password:
-Verifying - Enter Export Password:
-OpenSSL>
+REM----------------------------------
+REM End entity SSL server certificate
+REM----------------------------------
+
+req -newkey rsa:2048 -config ssl.cfg -keyout mysrv.local.key -out mysrv.local.csr -text
+x509 -in mysrv.local.csr -CA sint.crt -CAkey sint.key -days 365 -CAcreateserial -out mysrv.local.crt -extfile server.ext -req -text
+
+REM--------------------------------------------
+REM Root client certificate commands
+REM--------------------------------------------
+
+req -newkey rsa:2048 -config ssl.cfg -keyout croot.key -out croot.csr -text
+x509 -in croot.csr -days 365 -signkey croot.key -out croot.crt -extfile ca.ext -req -text
+
+req -newkey rsa:2048 -config ssl.cfg -keyout cint.key -out cint.csr -text
+x509 -in cint.csr -CA croot.crt -CAkey croot.key -days 365 -CAcreateserial -out cint.crt -extfile ica.ext -req -text
+
+REM Concatenate the roots. 
+
+Windows Powershell
+C:\> Get-Content .\cint.crt,.\croot.crt | Out-file .\croots.crt
+Linux
+$ cat cint.crt croot.crt > croots.crt
+
+REM----------------------------------
+REM End entity Client certificate
+REM----------------------------------
+
+req -newkey rsa:2048 -config ssl.cfg -keyout alice.key -out alice.csr -text
+x509 -in alice.csr -CA cint.crt -CAkey cint.key -days 365 -CAcreateserial -out alice.crt -extfile client.ext -req -text
+
+openssl pkcs12 -export -in alice.crt -inkey alice.key -out alice.p12 -certfile croots.crt
+
+
+REM ---------------------------
+REM SAML self-sign certificates for 5 years
+REM ---------------------------
+
+req -newkey rsa:2048 -config saml.cfg -keyout idp.key -out idp.crt -x509 -days 1825 -text
+req -newkey rsa:2048 -config saml.cfg -keyout hr.key -out hr.crt -x509 -days 1825 -text
+req -newkey rsa:2048 -config saml.cfg -keyout finance.key -out finance.crt -x509 -days 1825 -text

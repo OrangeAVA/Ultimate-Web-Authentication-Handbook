@@ -37,9 +37,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-openssl/pkcs12"
 	session "github.com/go-session/session/v3"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/pkcs12"
 	"golang.org/x/oauth2"
 )
 

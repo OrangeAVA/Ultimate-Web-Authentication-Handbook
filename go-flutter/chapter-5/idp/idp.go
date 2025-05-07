@@ -45,8 +45,8 @@ import (
 	"github.com/go-oauth2/oauth2/v4/models"
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/go-oauth2/oauth2/v4/store"
+	"github.com/go-openssl/pkcs12"
 	"github.com/go-session/session"
-	"golang.org/x/crypto/pkcs12"
 )
 
 var (

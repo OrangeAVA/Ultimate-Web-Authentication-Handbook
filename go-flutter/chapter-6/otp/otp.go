@@ -45,10 +45,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-openssl/pkcs12"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/hotp"
 	"github.com/pquerna/otp/totp"
-	"golang.org/x/crypto/pkcs12"
 )
 
 func getTLSCert(certloc string) (cert tls.Certificate, err error) {

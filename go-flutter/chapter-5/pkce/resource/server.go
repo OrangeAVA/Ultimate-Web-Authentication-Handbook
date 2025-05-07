@@ -34,7 +34,7 @@ import (
 	"net/http/httputil"
 	"os"
 
-	"golang.org/x/crypto/pkcs12"
+	"github.com/go-openssl/pkcs12"
 )
 
 func getTLSCert(certloc string) (cert tls.Certificate, err error) {
