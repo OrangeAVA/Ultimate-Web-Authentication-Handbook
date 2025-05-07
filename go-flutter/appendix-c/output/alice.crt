@@ -1,0 +1,88 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            72:48:9b:67:7d:07:c8:d7:0a:40:90:eb:28:cd:8e:12:87:29:8e:7c
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = IN, ST = KA, L = BANGALORE, O = HOWA, OU = Client Intermediate, CN = cint
+        Validity
+            Not Before: May  5 08:50:53 2025 GMT
+            Not After : May  5 08:50:53 2026 GMT
+        Subject: C = IN, ST = KA, L = BANGALORE, O = HOWA, OU = Clients, CN = alice, emailAddress = alice@mysrv.local
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:ba:1e:45:e7:de:73:e8:02:4c:94:52:32:c8:db:
+                    66:6e:d8:07:4a:09:16:8f:eb:00:a3:45:75:41:42:
+                    5a:48:1a:32:b3:a7:96:8a:8a:7c:41:13:24:ea:d1:
+                    c2:50:f4:35:0e:72:57:11:ea:06:b7:77:fe:71:81:
+                    33:f2:f0:82:a0:2d:03:2a:63:1d:59:30:7b:34:7b:
+                    8b:19:9f:6d:75:3e:b1:38:14:e5:a3:b2:f4:b4:5a:
+                    2c:8b:13:cb:27:4b:62:32:14:e2:bf:33:56:55:f4:
+                    fd:22:27:81:c4:76:01:fd:4b:52:80:30:da:34:b2:
+                    1d:ee:42:13:86:f4:32:48:ac:1c:1b:0d:d1:e2:12:
+                    5c:bb:97:50:f8:0a:6b:39:a1:22:19:ff:bc:0e:95:
+                    7b:de:dd:89:12:16:a9:82:ae:f6:fd:a7:56:0d:6e:
+                    ba:e7:c8:ec:76:ad:45:5d:d5:6d:37:e5:06:e7:a5:
+                    4c:cd:c4:ec:f2:b3:12:de:99:a6:34:91:b5:b7:5d:
+                    66:bd:fa:bc:4c:9d:51:f0:d6:0b:cc:af:76:a7:b9:
+                    16:3d:2c:54:99:0e:d0:e5:6f:93:6e:30:53:5b:7a:
+                    51:6d:87:3a:cf:84:04:61:a6:e4:85:ba:6e:46:c4:
+                    1c:0d:f3:f5:eb:e0:4b:6f:2c:7e:07:81:f5:ee:b2:
+                    0b:d1
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Key Usage: 
+                Digital Signature, Non Repudiation, Key Encipherment, Data Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Subject Alternative Name: 
+                email:alice@mysrv.local
+            X509v3 Subject Key Identifier: 
+                41:D5:44:FE:6F:BA:D7:1B:1C:71:C1:9E:AE:4D:CC:89:05:07:D0:BD
+            X509v3 Authority Key Identifier: 
+                06:4C:8C:65:AD:FE:DA:C2:31:A0:5E:24:37:5C:6E:47:13:CD:52:73
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        47:1c:a1:d1:62:74:f8:d9:f6:ce:62:2a:91:63:c7:ed:5a:65:
+        5a:77:36:0e:15:f3:dc:0a:d8:dc:d0:74:81:ad:58:c8:3f:d8:
+        e2:17:90:09:27:34:93:ff:e3:27:0c:90:40:6c:e9:82:bb:55:
+        6b:7c:07:ba:13:86:f4:b8:64:40:6d:24:ac:01:0e:64:0e:b6:
+        7c:bb:5f:7f:c0:d2:50:0d:0c:1d:f7:ef:2f:31:e9:86:f2:25:
+        f1:11:fa:21:11:11:a3:8f:f3:6c:86:3f:45:41:7d:49:ba:9d:
+        01:77:21:5c:b8:d5:5d:16:ca:b4:34:2b:d9:18:8f:12:85:3b:
+        85:77:5e:84:f2:57:26:5f:c7:96:4e:fd:d8:3c:70:e2:2a:f3:
+        0b:a3:a0:e7:50:32:9c:d9:fd:86:f4:93:16:b1:0e:6f:9c:60:
+        4d:1c:0e:2d:f9:2f:95:bb:de:44:a1:3d:36:33:e0:a4:b3:84:
+        72:9a:d9:0f:bc:b9:7a:cd:30:42:ca:44:23:47:c9:be:96:d4:
+        62:bf:de:ff:db:83:12:46:a9:a5:8e:bb:7b:cf:79:82:d4:5c:
+        de:ae:e4:a8:ff:4d:5e:f3:b6:51:9b:55:3d:91:d7:4b:99:67:
+        4a:3c:4c:93:57:92:80:1b:19:46:1e:39:1a:39:e1:f3:51:59:
+        6d:3f:45:56
+-----BEGIN CERTIFICATE-----
+MIIECTCCAvGgAwIBAgIUckibZ30HyNcKQJDrKM2OEocpjnwwDQYJKoZIhvcNAQEL
+BQAwajELMAkGA1UEBhMCSU4xCzAJBgNVBAgMAktBMRIwEAYDVQQHDAlCQU5HQUxP
+UkUxDTALBgNVBAoMBEhPV0ExHDAaBgNVBAsME0NsaWVudCBJbnRlcm1lZGlhdGUx
+DTALBgNVBAMMBGNpbnQwHhcNMjUwNTA1MDg1MDUzWhcNMjYwNTA1MDg1MDUzWjCB
+gTELMAkGA1UEBhMCSU4xCzAJBgNVBAgMAktBMRIwEAYDVQQHDAlCQU5HQUxPUkUx
+DTALBgNVBAoMBEhPV0ExEDAOBgNVBAsMB0NsaWVudHMxDjAMBgNVBAMMBWFsaWNl
+MSAwHgYJKoZIhvcNAQkBFhFhbGljZUBteXNydi5sb2NhbDCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALoeRefec+gCTJRSMsjbZm7YB0oJFo/rAKNFdUFC
+WkgaMrOnloqKfEETJOrRwlD0NQ5yVxHqBrd3/nGBM/LwgqAtAypjHVkwezR7ixmf
+bXU+sTgU5aOy9LRaLIsTyydLYjIU4r8zVlX0/SIngcR2Af1LUoAw2jSyHe5CE4b0
+MkisHBsN0eISXLuXUPgKazmhIhn/vA6Ve97diRIWqYKu9v2nVg1uuufI7HatRV3V
+bTflBuelTM3E7PKzEt6ZpjSRtbddZr36vEydUfDWC8yvdqe5Fj0sVJkO0OVvk24w
+U1t6UW2HOs+EBGGm5IW6bkbEHA3z9evgS28sfgeB9e6yC9ECAwEAAaOBjjCBizAJ
+BgNVHRMEAjAAMAsGA1UdDwQEAwIE8DATBgNVHSUEDDAKBggrBgEFBQcDAjAcBgNV
+HREEFTATgRFhbGljZUBteXNydi5sb2NhbDAdBgNVHQ4EFgQUQdVE/m+61xscccGe
+rk3MiQUH0L0wHwYDVR0jBBgwFoAUBkyMZa3+2sIxoF4kN1xuRxPNUnMwDQYJKoZI
+hvcNAQELBQADggEBAEccodFidPjZ9s5iKpFjx+1aZVp3Ng4V89wK2NzQdIGtWMg/
+2OIXkAknNJP/4ycMkEBs6YK7VWt8B7oThvS4ZEBtJKwBDmQOtny7X3/A0lANDB33
+7y8x6YbyJfER+iEREaOP82yGP0VBfUm6nQF3IVy41V0WyrQ0K9kYjxKFO4V3XoTy
+VyZfx5ZO/dg8cOIq8wujoOdQMpzZ/Yb0kxaxDm+cYE0cDi35L5W73kShPTYz4KSz
+hHKa2Q+8uXrNMELKRCNHyb6W1GK/3v/bgxJGqaWOu3vPeYLUXN6u5Kj/TV7ztlGb
+VT2R10uZZ0o8TJNXkoAbGUYeORo54fNRWW0/RVY=
+-----END CERTIFICATE-----
