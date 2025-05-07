@@ -1,5 +1,5 @@
-<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2025-05-08T21:46:17.721Z" entityID="https://finance.mysrv.local:8445/saml/metadata">
-  <SPSSODescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2025-05-08T21:46:17.720815013Z" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true" WantAssertionsSigned="true">
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2025-05-09T03:54:22.583Z" entityID="https://finance.mysrv.local:8445/saml/metadata">
+  <SPSSODescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2025-05-09T03:54:22.583400218Z" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true" WantAssertionsSigned="true">
     <KeyDescriptor use="encryption">
       <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
         <X509Data xmlns="http://www.w3.org/2000/09/xmldsig#">

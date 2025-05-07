@@ -105,9 +105,9 @@ func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certif
 
 func setupTLSServer(srvName string) *http.Server {
 	cert, err := getTLSCert(
-		"certs/server/scas.crt",
-		fmt.Sprintf("certs/server/%s.crt", srvName),
-		fmt.Sprintf("certs/server/%s.key", srvName),
+		"certs/ssl/scas.crt",
+		fmt.Sprintf("certs/ssl/%s.crt", srvName),
+		fmt.Sprintf("certs/ssl/%s.key", srvName),
 		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
@@ -125,6 +125,31 @@ func setupTLSServer(srvName string) *http.Server {
 	}
 }
 
+func getHTTPSClient(capath string) (client *http.Client, err error) {
+	var (
+		tlsConfig tls.Config
+		data      []byte
+	)
+	if data, err = os.ReadFile(capath); err == nil {
+		var block *pem.Block
+		certpool := x509.NewCertPool()
+		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
+			if cert, err := x509.ParseCertificate(block.Bytes); err == nil {
+				certpool.AddCert(cert)
+			}
+		}
+		tlsConfig.RootCAs = certpool
+	} else {
+		return
+	}
+	client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tlsConfig,
+		},
+	}
+	return
+}
+
 func main() {
 	rootURL, err := url.Parse("https://hr.mysrv.local:8444")
 	if err != nil {
@@ -136,7 +161,12 @@ func main() {
 		log.Default().Fatalf("IDP not running at: https://idp.local:8443 %v", err)
 	}
 
-	idpMetadata, err := samlsp.FetchMetadata(context.Background(), http.DefaultClient, *idpMetadataURL)
+	httpclient, err := getHTTPSClient("certs/ssl/scas.crt")
+	if err != nil {
+		log.Default().Fatalf("Unable to read RootCAs: %v", err)
+	}
+
+	idpMetadata, err := samlsp.FetchMetadata(context.Background(), httpclient, *idpMetadataURL)
 	if err != nil {
 		log.Default().Fatalf("Failed to download IDP metadata %v", err)
 	}
