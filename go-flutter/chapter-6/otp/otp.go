@@ -38,38 +38,24 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"image/png"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/go-openssl/pkcs12"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/hotp"
 	"github.com/pquerna/otp/totp"
+
+	"howa.in/common"
 )
 
-func getTLSCert(certloc string) (cert tls.Certificate, err error) {
-	var (
-		fdata   []byte
-		blocks  []*pem.Block
-		pemData []byte
-	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
-			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-		}
-	}
-	return
-}
-
-func setupTLSServer(certloc string, srvName string) *http.Server {
-	cert, err := getTLSCert(certloc)
+func setupTLSServer(srvName string) *http.Server {
+	cert, err := common.GetTLSCert(
+		"../certs/scas.crt",
+		fmt.Sprintf("../certs/%s.crt", srvName),
+		fmt.Sprintf("../certs/%s.key", srvName),
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}
@@ -77,7 +63,7 @@ func setupTLSServer(certloc string, srvName string) *http.Server {
 	tlsConfig := &tls.Config{
 		ServerName:   srvName,
 		MinVersion:   tls.VersionTLS13,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
 	return &http.Server{
@@ -201,6 +187,6 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.FileServer(http.Dir("frontend/build/web")).ServeHTTP(w, r)
 	})
-	server := setupTLSServer("../certs/mysrv.p12", "mysrv.local")
+	server := setupTLSServer("mysrv.local")
 	log.Default().Fatal(server.ListenAndServeTLS("", ""))
 }
