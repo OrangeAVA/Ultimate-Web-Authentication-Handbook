@@ -15,4 +15,5 @@ require (
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	howa.in/common v0.0.0-00010101000000-000000000000
 )
+
 replace howa.in/common => ../../common

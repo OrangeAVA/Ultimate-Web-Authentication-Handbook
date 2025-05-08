@@ -30,20 +30,23 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"encoding/pem"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/go-openssl/pkcs12"
 	session "github.com/go-session/session/v3"
 	"github.com/google/uuid"
 	"golang.org/x/oauth2"
+
+	"howa.in/common"
 )
 
 func addOAuthHandlers() {
+	httpsclient, err := common.GetHTTPSClient("../certs/sroot.crt")
+	if err != nil {
+		log.Default().Fatal(err)
+	}
 	conf := &oauth2.Config{
 		ClientID:     "222222",
 		ClientSecret: "22222222",
@@ -87,10 +90,17 @@ func addOAuthHandlers() {
 		if err := req.FormValue("error"); err != "" {
 			desc := req.FormValue("error_description")
 			http.Error(w, desc, http.StatusUnauthorized)
+			return
 		}
 		if code := req.FormValue("code"); code != "" {
-			token, _ := conf.Exchange(context.Background(), code, oauth2.SetAuthURLParam(
-				"redirect_uri", "https://mysrv.local:8444/oauth/callback"))
+			token, err := conf.Exchange(
+				context.WithValue(context.Background(), oauth2.HTTPClient, httpsclient),
+				code,
+				oauth2.SetAuthURLParam("redirect_uri", "https://mysrv.local:8444/oauth/callback"))
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
 			store.Set("token", token.AccessToken)
 			store.Save()
 			http.Redirect(w, req, "/", http.StatusFound)
@@ -120,10 +130,12 @@ func addOAuthHandlers() {
 			http.Error(w, "User not authorized.", http.StatusUnauthorized)
 			return
 		}
-		client := conf.Client(context.Background(), &oauth2.Token{
-			AccessToken: token.(string),
-			TokenType:   "Bearer",
-		})
+		client := conf.Client(
+			context.WithValue(context.Background(), oauth2.HTTPClient, httpsclient),
+			&oauth2.Token{
+				AccessToken: token.(string),
+				TokenType:   "Bearer",
+			})
 		var (
 			user_uri = "https://idp.local:8443/test"
 			req      *http.Request
@@ -152,28 +164,15 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.FileServer(http.Dir("mysrvfront/build/web")).ServeHTTP(w, r)
 	})
-	StartTLSServer("../certs/mysrv.p12", "mysrv.local", "8444")
+	startTLSServer("mysrv.local", "8444")
 }
 
-func getTLSCert(certloc string) (cert tls.Certificate, err error) {
-	var (
-		fdata   []byte
-		blocks  []*pem.Block
-		pemData []byte
-	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
-			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-		}
-	}
-	return
-}
-
-func StartTLSServer(certloc string, srvName string, port string) {
-	cert, err := getTLSCert(certloc)
+func startTLSServer(srvName string, port string) {
+	cert, err := common.GetTLSCert(
+		"../certs/scas.crt",
+		fmt.Sprintf("../certs/%s.crt", srvName),
+		fmt.Sprintf("../certs/%s.key", srvName),
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}
@@ -181,7 +180,7 @@ func StartTLSServer(certloc string, srvName string, port string) {
 	tlsConfig := &tls.Config{
 		ServerName:   srvName,
 		MinVersion:   tls.VersionTLS13,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
 	server := http.Server{

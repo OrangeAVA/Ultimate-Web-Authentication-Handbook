@@ -28,7 +28,6 @@ import (
 	"crypto/tls"
 	"encoding/base32"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"image"
 	"image/png"
@@ -46,7 +45,6 @@ import (
 	"github.com/go-oauth2/oauth2/v4/models"
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/go-oauth2/oauth2/v4/store"
-	"github.com/go-openssl/pkcs12"
 	sess "github.com/go-session/session/v3"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -55,6 +53,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
+
+	"howa.in/common"
 )
 
 func jsonResponse(w http.ResponseWriter, obj interface{}) {
@@ -714,7 +714,7 @@ func addTOTPHandlers() {
 					imgpath = "images/" + uuid.New().String() + ".png"
 					var f *os.File
 					if f, err = os.OpenFile(imgpath,
-						os.O_WRONLY|os.O_CREATE, 0644); err == nil {
+						os.O_WRONLY|os.O_CREATE, 0o644); err == nil {
 						defer f.Close()
 						f.Write(imgbuf.Bytes())
 					}
@@ -859,28 +859,15 @@ func main() {
 	addWebAuthnHandlers()
 	addTOTPHandlers()
 	addStaticRoutes()
-	StartTLSServer("../certs/idp.local.p12", "idp.local", "8443")
+	startTLSServer("idp.local", "8443")
 }
 
-func getTLSCert(certloc string) (cert tls.Certificate, err error) {
-	var (
-		fdata   []byte
-		blocks  []*pem.Block
-		pemData []byte
-	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
-			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-		}
-	}
-	return
-}
-
-func StartTLSServer(certloc string, srvName string, port string) {
-	cert, err := getTLSCert(certloc)
+func startTLSServer(srvName string, port string) {
+	cert, err := common.GetTLSCert(
+		"../certs/scas.crt",
+		fmt.Sprintf("../certs/%s.crt", srvName),
+		fmt.Sprintf("../certs/%s.key", srvName),
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}
@@ -888,7 +875,7 @@ func StartTLSServer(certloc string, srvName string, port string) {
 	tlsConfig := &tls.Config{
 		ServerName:   srvName,
 		MinVersion:   tls.VersionTLS13,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
 	server := http.Server{
