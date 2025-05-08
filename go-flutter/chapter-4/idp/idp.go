@@ -30,7 +30,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"io"
 	"log"
@@ -43,74 +42,15 @@ import (
 	"github.com/crewjam/saml/samlidp"
 	"github.com/crewjam/saml/samlsp"
 	"github.com/rs/cors"
-	"github.com/youmark/pkcs8"
 	"golang.org/x/crypto/bcrypt"
+
+	"howa.in/common"
 )
 
 var sploaded bool = false
 
-func getProviderCertAndKey(certpath, keypath string, keypass []byte) (key *rsa.PrivateKey, cert *x509.Certificate, err error) {
-	var data []byte
-	if data, err = os.ReadFile(keypath); err == nil {
-		if block, _ := pem.Decode(data); block != nil {
-			if key, err = pkcs8.ParsePKCS8PrivateKeyRSA(block.Bytes, keypass); err != nil {
-				return
-			}
-		}
-	}
-	if data, err = os.ReadFile(certpath); err == nil {
-		if block, _ := pem.Decode(data); block != nil {
-			cert, err = x509.ParseCertificate(block.Bytes)
-		}
-	}
-	return
-}
-
-func addCertificates(certpath string, c *tls.Certificate) (err error) {
-	var (
-		data  []byte
-		block *pem.Block
-	)
-	if data, err = os.ReadFile(certpath); err == nil {
-		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
-			if block.Type == "CERTIFICATE" {
-				c.Certificate = append(c.Certificate, block.Bytes)
-			}
-		}
-	}
-	return
-}
-
-/*
-Server certificate
-*/
-func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certificate, err error) {
-	var (
-		data  []byte
-		block *pem.Block
-		cert  tls.Certificate
-	)
-
-	if err = addCertificates(certpath, &cert); err == nil {
-		if err = addCertificates(capath, &cert); err == nil {
-			if data, err = os.ReadFile(keypath); err == nil {
-				if block, _ = pem.Decode(data); block != nil {
-					if cert.PrivateKey, _, err = pkcs8.ParsePrivateKey(block.Bytes, keypass); err == nil {
-						if cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0]); err == nil {
-							c = &cert
-						}
-					}
-				} else {
-					err = fmt.Errorf("no private key data found")
-				}
-			}
-		}
-	}
-	return
-}
-
 func setupTLSServer(srvName string) *http.Server {
-	cert, err := getTLSCert(
+	cert, err := common.GetTLSCert(
 		"certs/ssl/scas.crt",
 		fmt.Sprintf("certs/ssl/%s.crt", srvName),
 		fmt.Sprintf("certs/ssl/%s.key", srvName),
@@ -129,31 +69,6 @@ func setupTLSServer(srvName string) *http.Server {
 		Addr:      ":8443",
 		TLSConfig: tlsConfig,
 	}
-}
-
-func getHTTPSClient(capath string) (client *http.Client, err error) {
-	var (
-		tlsConfig tls.Config
-		data      []byte
-	)
-	if data, err = os.ReadFile(capath); err == nil {
-		var block *pem.Block
-		certpool := x509.NewCertPool()
-		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
-			if cert, err := x509.ParseCertificate(block.Bytes); err == nil {
-				certpool.AddCert(cert)
-			}
-		}
-		tlsConfig.RootCAs = certpool
-	} else {
-		return
-	}
-	client = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tlsConfig,
-		},
-	}
-	return
 }
 
 func addSP(httpsclient *http.Client, fn string, svcurl string, svcname string, mdurl string, scurl string) {
@@ -194,7 +109,7 @@ func addSP(httpsclient *http.Client, fn string, svcurl string, svcname string, m
 
 func addServiceProviders(w http.ResponseWriter, r *http.Request) {
 
-	httpsclient, err := getHTTPSClient("certs/ssl/scas.crt")
+	httpsclient, err := common.GetHTTPSClient("certs/ssl/scas.crt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -381,7 +296,7 @@ func main() {
 		log.Default().Fatalf("cannot parse base URL: %v", err)
 	}
 
-	if key, cert, err = getProviderCertAndKey("certs/idp.crt", "certs/idp.key", []byte("password")); err != nil {
+	if key, cert, err = common.GetProviderCertAndKey("certs/idp.crt", "certs/idp.key", []byte("password")); err != nil {
 		log.Default().Fatalf("%v", err)
 	}
 

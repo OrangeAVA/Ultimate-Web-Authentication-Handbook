@@ -27,84 +27,21 @@ package main
 
 import (
 	"context"
-	"crypto/rsa"
 	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/crewjam/saml/samlsp"
-	"github.com/youmark/pkcs8"
+
+	"howa.in/common"
 )
 
-func getProviderCertAndKey(certpath, keypath string, keypass []byte) (key *rsa.PrivateKey, cert *x509.Certificate, err error) {
-	var data []byte
-	if data, err = os.ReadFile(keypath); err == nil {
-		if block, _ := pem.Decode(data); block != nil {
-			if key, err = pkcs8.ParsePKCS8PrivateKeyRSA(block.Bytes, keypass); err != nil {
-				return
-			}
-		}
-	}
-	if data, err = os.ReadFile(certpath); err == nil {
-		if block, _ := pem.Decode(data); block != nil {
-			cert, err = x509.ParseCertificate(block.Bytes)
-		}
-	}
-	return
-}
-
-func addCertificates(certpath string, c *tls.Certificate) (err error) {
-	var (
-		data  []byte
-		block *pem.Block
-	)
-	if data, err = os.ReadFile(certpath); err == nil {
-		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
-			if block.Type == "CERTIFICATE" {
-				c.Certificate = append(c.Certificate, block.Bytes)
-			}
-		}
-	}
-	return
-}
-
-/*
-Server certificate
-*/
-func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certificate, err error) {
-	var (
-		data  []byte
-		block *pem.Block
-		cert  tls.Certificate
-	)
-
-	if err = addCertificates(certpath, &cert); err == nil {
-		if err = addCertificates(capath, &cert); err == nil {
-			if data, err = os.ReadFile(keypath); err == nil {
-				if block, _ = pem.Decode(data); block != nil {
-					if cert.PrivateKey, _, err = pkcs8.ParsePrivateKey(block.Bytes, keypass); err == nil {
-						if cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0]); err == nil {
-							c = &cert
-						}
-					}
-				} else {
-					err = fmt.Errorf("no private key data found")
-				}
-			}
-		}
-	}
-	return
-}
-
 func setupTLSServer(srvName string) *http.Server {
-	cert, err := getTLSCert(
+	cert, err := common.GetTLSCert(
 		"certs/ssl/scas.crt",
 		fmt.Sprintf("certs/ssl/%s.crt", srvName),
 		fmt.Sprintf("certs/ssl/%s.key", srvName),
@@ -125,31 +62,6 @@ func setupTLSServer(srvName string) *http.Server {
 	}
 }
 
-func getHTTPSClient(capath string) (client *http.Client, err error) {
-	var (
-		tlsConfig tls.Config
-		data      []byte
-	)
-	if data, err = os.ReadFile(capath); err == nil {
-		var block *pem.Block
-		certpool := x509.NewCertPool()
-		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
-			if cert, err := x509.ParseCertificate(block.Bytes); err == nil {
-				certpool.AddCert(cert)
-			}
-		}
-		tlsConfig.RootCAs = certpool
-	} else {
-		return
-	}
-	client = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tlsConfig,
-		},
-	}
-	return
-}
-
 func main() {
 	rootURL, err := url.Parse("https://hr.mysrv.local:8444")
 	if err != nil {
@@ -161,7 +73,7 @@ func main() {
 		log.Default().Fatalf("IDP not running at: https://idp.local:8443 %v", err)
 	}
 
-	httpclient, err := getHTTPSClient("certs/ssl/scas.crt")
+	httpclient, err := common.GetHTTPSClient("certs/ssl/scas.crt")
 	if err != nil {
 		log.Default().Fatalf("Unable to read RootCAs: %v", err)
 	}
@@ -171,7 +83,7 @@ func main() {
 		log.Default().Fatalf("Failed to download IDP metadata %v", err)
 	}
 
-	key, cert, err := getProviderCertAndKey("certs/hr.crt", "certs/hr.key", []byte("password"))
+	key, cert, err := common.GetProviderCertAndKey("certs/hr.crt", "certs/hr.key", []byte("password"))
 	if err != nil {
 		panic(err)
 	}

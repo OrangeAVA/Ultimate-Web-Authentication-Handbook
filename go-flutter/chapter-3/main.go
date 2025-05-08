@@ -37,7 +37,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/youmark/pkcs8"
+	"howa.in/common"
 )
 
 func addHelloHandler() {
@@ -99,49 +99,6 @@ func configureClientAuth(tlsConfig *tls.Config) error {
 	return nil
 }
 
-func addCertificates(certpath string, c *tls.Certificate) (err error) {
-	var (
-		data  []byte
-		block *pem.Block
-	)
-	if data, err = os.ReadFile(certpath); err == nil {
-		for block, data = pem.Decode(data); block != nil; block, data = pem.Decode(data) {
-			if block.Type == "CERTIFICATE" {
-				c.Certificate = append(c.Certificate, block.Bytes)
-			}
-		}
-	}
-	return
-}
-
-/*
-Server certificate
-*/
-func getTLSCert(capath, certpath, keypath string, keypass []byte) (c *tls.Certificate, err error) {
-	var (
-		data  []byte
-		block *pem.Block
-		cert  tls.Certificate
-	)
-
-	if err = addCertificates(certpath, &cert); err == nil {
-		if err = addCertificates(capath, &cert); err == nil {
-			if data, err = os.ReadFile(keypath); err == nil {
-				if block, _ = pem.Decode(data); block != nil {
-					if cert.PrivateKey, _, err = pkcs8.ParsePrivateKey(block.Bytes, keypass); err == nil {
-						if cert.Leaf, err = x509.ParseCertificate(cert.Certificate[0]); err == nil {
-							c = &cert
-						}
-					}
-				} else {
-					err = fmt.Errorf("no private key data found")
-				}
-			}
-		}
-	}
-	return
-}
-
 func main() {
 	// Assign false to turnoff client auth
 	const CLIENT_AUTH = false
@@ -149,7 +106,7 @@ func main() {
 	addHelloHandler()
 	addBasicAuthHandler()
 
-	cert, err := getTLSCert(
+	cert, err := common.GetTLSCert(
 		"certs/server/scas.crt",
 		"certs/server/mysrv.local.crt",
 		"certs/server/mysrv.local.key",

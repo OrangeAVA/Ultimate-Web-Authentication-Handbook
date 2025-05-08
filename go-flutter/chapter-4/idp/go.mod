@@ -1,8 +1,6 @@
 module howa.in/chapter-4/idp
 
-go 1.24.1
-
-toolchain go1.24.2
+go 1.24.2
 
 require golang.org/x/crypto v0.36.0
 
@@ -22,4 +20,6 @@ require (
 	github.com/russellhaering/goxmldsig v1.2.0 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78
 	github.com/zenazn/goji v1.0.1 // indirect
+  howa.in/common v0.0.0-00010101000000-000000000000
 )
+replace howa.in/common => ../../common

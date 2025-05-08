@@ -27,8 +27,8 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"encoding/pem"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -45,8 +45,9 @@ import (
 	"github.com/go-oauth2/oauth2/v4/models"
 	"github.com/go-oauth2/oauth2/v4/server"
 	"github.com/go-oauth2/oauth2/v4/store"
-	"github.com/go-openssl/pkcs12"
 	"github.com/go-session/session"
+
+	"howa.in/common"
 )
 
 var (
@@ -57,25 +58,12 @@ var (
 	portvar   int
 )
 
-func getTLSCert(certloc string) (cert tls.Certificate, err error) {
-	var (
-		fdata   []byte
-		blocks  []*pem.Block
-		pemData []byte
-	)
-	if fdata, err = os.ReadFile(certloc); err == nil {
-		if blocks, err = pkcs12.ToPEM(fdata, "password"); err == nil {
-			for _, b := range blocks {
-				pemData = append(pemData, pem.EncodeToMemory(b)...)
-			}
-			cert, err = tls.X509KeyPair(pemData, pemData)
-		}
-	}
-	return
-}
-
-func setupTLSServer(certloc string, srvName string) *http.Server {
-	cert, err := getTLSCert(certloc)
+func setupTLSServer(srvName string) *http.Server {
+	cert, err := common.GetTLSCert(
+		"../certs/scas.crt",
+		fmt.Sprintf("../certs/%s.crt", srvName),
+		fmt.Sprintf("../certs/%s.key", srvName),
+		[]byte("password"))
 	if err != nil {
 		log.Default().Fatal(err)
 	}
@@ -83,7 +71,7 @@ func setupTLSServer(certloc string, srvName string) *http.Server {
 	tlsConfig := &tls.Config{
 		ServerName:   srvName,
 		MinVersion:   tls.VersionTLS13,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{*cert},
 	}
 
 	return &http.Server{
@@ -218,7 +206,7 @@ func main() {
 		e.Encode(data)
 	})
 
-	tlsserver := setupTLSServer("../certs/idp.local.p12", "idp.local")
+	tlsserver := setupTLSServer("idp.local")
 
 	log.Printf("Server is running at %d port.\n", portvar)
 	log.Printf("Point your OAuth client Auth endpoint to %s:%d%s", "https://idp.local", portvar, "/oauth/authorize")

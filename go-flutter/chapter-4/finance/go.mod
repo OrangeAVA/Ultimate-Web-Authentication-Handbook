@@ -1,8 +1,6 @@
 module finance
 
-go 1.24.1
-
-toolchain go1.24.2
+go 1.24.2
 
 require github.com/crewjam/saml v0.4.13
 
@@ -18,4 +16,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russellhaering/goxmldsig v1.2.0 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78
+	howa.in/common v0.0.0-00010101000000-000000000000
 )
+
+replace howa.in/common => ../../common
