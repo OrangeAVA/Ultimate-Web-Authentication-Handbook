@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/io_client.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:math';
-import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 void main() {
   runApp(Provider(
-    create: (context) => http.Client(),
+    create: (context) {
+      final SecurityContext securityContext = SecurityContext();
+      securityContext.setTrustedCertificates("../../certs/sroot.crt");
+      return IOClient(HttpClient(context: securityContext));
+    },
     child: const IDPApp(),
   ));
 }
@@ -60,7 +65,7 @@ class _IDPHomePageState extends State<IDPHomePage> {
       "222222",
       Uri.parse("https://idp.local:8443/oauth/authorize"),
       Uri.parse("https://idp.local:8443/oauth/token"),
-      httpClient: Provider.of<http.Client>(context, listen: false),
+      httpClient: Provider.of<IOClient>(context, listen: false),
       codeVerifier:
           base64Url.encode(List<int>.generate(32, (i) => _random.nextInt(256))),
     );

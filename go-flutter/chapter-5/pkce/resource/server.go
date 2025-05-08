@@ -59,6 +59,10 @@ func setupTLSServer(srvName string) *http.Server {
 }
 
 func main() {
+	httpsClient, err := common.GetHTTPSClient("../../certs/sroot.crt")
+	if err != nil {
+		log.Default().Fatal(err)
+	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		dumpRequest(os.Stdout, "/", r)
 		if r.Form == nil {
@@ -91,7 +95,7 @@ func main() {
 		if auth_headers, ok = r.Header["Authorization"]; ok {
 			if req, err = http.NewRequest("GET", "https://idp.local:8443/test", nil); err == nil {
 				req.Header.Add("Authorization", auth_headers[0])
-				if res, err = http.DefaultClient.Do(req); err == nil {
+				if res, err = httpsClient.Do(req); err == nil {
 					defer res.Body.Close()
 					if data, err = ioutil.ReadAll(res.Body); err == nil {
 						log.Println(string(data))
