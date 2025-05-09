@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: const Text(
               "Login",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
           ),
           TextButton(
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: const Text(
               "Logout",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ),
           ),
         ],
