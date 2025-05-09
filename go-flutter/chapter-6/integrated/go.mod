@@ -25,7 +25,6 @@ require (
 	github.com/boombuler/barcode v1.0.2 // indirect
 	github.com/bytedance/gopkg v0.1.2 // indirect
 	github.com/fxamacker/cbor/v2 v2.8.0 // indirect
-	github.com/go-openssl/pkcs12 v0.0.1
 	github.com/google/go-tpm v0.9.4 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/tidwall/btree v1.7.0 // indirect

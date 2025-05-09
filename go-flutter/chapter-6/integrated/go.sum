@@ -23,8 +23,6 @@ github.com/gavv/httpexpect v2.0.0+incompatible h1:1X9kcRshkSKEjNJJxX9Y9mQ5BRfbxU
 github.com/gavv/httpexpect v2.0.0+incompatible/go.mod h1:x+9tiU1YnrOvnB725RkpoLv1M62hOWzwo5OXotisrKc=
 github.com/go-oauth2/oauth2/v4 v4.5.3 h1:lQt7O9KOnu/v4awe166FH7+p8tFUXQyR+no6nctAKU0=
 github.com/go-oauth2/oauth2/v4 v4.5.3/go.mod h1:ryzb7zr8fdQBlciD0+tcnEWeOok5B0J8V/DniwYqQ2k=
-github.com/go-openssl/pkcs12 v0.0.1 h1:HZujMIimXDBqZKAESVXnP40Rcd01CtW8Zg8kWANdM64=
-github.com/go-openssl/pkcs12 v0.0.1/go.mod h1:3842JI2q+yaI0edR9uQ6Zz2lfo/LEB8IBP5QgkzsR3A=
 github.com/go-session/session/v3 v3.2.1 h1:APQf5JFW84+bhbqRjEZO8J+IppSgT1jMQTFI/XVyIFY=
 github.com/go-session/session/v3 v3.2.1/go.mod h1:RftEBbyuzqkNCAxIrCLJe+rfBqB/4G11qxq9KYKrx4M=
 github.com/go-webauthn/webauthn v0.12.3 h1:hHQl1xkUuabUU9uS+ISNCMLs9z50p9mDUZI/FmkayNE=
