@@ -62,7 +62,7 @@ class _OIDCAppHomePageState extends State<OIDCAppHomePage> {
         return TextButton(
           onPressed: () => launchUrl(Uri(scheme: "http", path: path),
               webOnlyWindowName: "_self"),
-          child: Text(btnTxt, style: const TextStyle(color: Colors.white)),
+          child: Text(btnTxt, style: const TextStyle(color: Colors.black)),
         );
       },
     );
