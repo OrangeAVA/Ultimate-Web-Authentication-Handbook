@@ -44,7 +44,7 @@
       "type": "go",
       "mode": "debug",
       "program": "chapter-4/finance/finance.go",
-      "preLaunchTask": "ch4 finance frontend"
+      "preLaunchTask": "ch4 finance delay frontend"
     },
     {
       "name": "ch4 hr",
@@ -53,7 +53,7 @@
       "type": "go",
       "mode": "debug",
       "program": "chapter-4/hr/hr.go",
-      "preLaunchTask": "ch4 hr frontend"
+      "preLaunchTask": "ch4 hr delay frontend"
     },
     {
       "name": "ch5 github authcode",

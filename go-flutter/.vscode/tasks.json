@@ -9,10 +9,26 @@
       "options": {"cwd": "${workspaceFolder}/chapter-4/hr/frontend"},
     },
     {
+      "label": "ch4 hr delay frontend",
+      "command": "sleep",
+      "args": ["10"],
+      "type": "shell",
+      "dependsOn": "ch4 hr frontend",
+      "options": {"cwd": "${workspaceFolder}/chapter-4/finance/frontend"},
+    },
+    {
       "label": "ch4 finance frontend",
       "command": "flutter",
       "args": ["build", "web"],
       "type": "shell",
+      "options": {"cwd": "${workspaceFolder}/chapter-4/finance/frontend"},
+    },
+    {
+      "label": "ch4 finance delay frontend",
+      "command": "sleep",
+      "args": ["10"],
+      "type": "shell",
+      "dependsOn": "ch4 finance frontend",
       "options": {"cwd": "${workspaceFolder}/chapter-4/finance/frontend"},
     },
     {
