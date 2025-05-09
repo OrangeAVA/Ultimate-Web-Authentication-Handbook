@@ -18,8 +18,9 @@ require (
 	github.com/mattermost/xml-roundtrip-validator v0.1.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russellhaering/goxmldsig v1.2.0 // indirect
-	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78
+	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	github.com/zenazn/goji v1.0.1 // indirect
-  howa.in/common v0.0.0-00010101000000-000000000000
+	howa.in/common v0.0.0-00010101000000-000000000000
 )
+
 replace howa.in/common => ../../common
