@@ -41,9 +41,10 @@ app.get('/basicauth', (req, res) => {
   const authheader = req.headers.authorization;
   console.log(req.headers);
   if (!authheader) {
-    let err = new Error('User not authenticated!');
-    res.setHeader('WWW-Authenticate', 'Basic');
-    res.status(401).send("User not authenticated");
+    res
+      .setHeader('WWW-Authenticate', 'Basic')
+      .status(401)
+      .send("User not authenticated");
     return;
   }
 
@@ -54,10 +55,10 @@ app.get('/basicauth', (req, res) => {
   if (user == 'jdoe' && pass == 'password') {
     res.send(`User ${user} authenticated successfully`);
   } else {
-    let err = new Error('User not authenticated!');
-    res.setHeader('WWW-Authenticate', 'Basic');
-    err.status = 401;
-    res.send("User not authenticated");
+    res
+      .setHeader('WWW-Authenticate', 'Basic')
+      .status(401)
+      .send("User not authenticated");
   }
 });
 
