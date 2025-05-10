@@ -36,7 +36,6 @@ app.get('/session', (req, res) => {
   res.send(`You have visited: ${count} times.`);
 });
 
-
 app.get('/basicauth', (req, res) => {
   const authheader = req.headers.authorization;
   console.log(req.headers);
