@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "openid-client": "^6.5.0"
   },

@@ -1,7 +1,8 @@
 const express = require("express");
 const https = require("https");
 const app = express();
-
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(express.static('frontend'));
 app.get('/hello', (req, res) => {
   res.send('Hello, World!');
@@ -36,7 +37,8 @@ app.get('/hello', (req, res) => {
   });
 
   app.get('/oauth/logout', (req, res) => {
-
+    res.clearCookie('token');
+    res.redirect('/');
   });
 
   app.get('/oauth/callback', (req, res) => {
@@ -47,7 +49,18 @@ app.get('/hello', (req, res) => {
         res.status(401).send(req.query.error_description);
         return;
       }
-      oclient.authorizationCodeGrant(config, req).then((tokens) => {
+
+      surl = req.protocol+"://"+req.host+req.originalUrl;
+      console.log(surl);
+      url = new URL(surl);
+
+      const params = {
+        redirect_uri: "https://mysrv.local:8443/oauth/callback",
+        scope: ["user"]
+      }
+      oclient.authorizationCodeGrant(config, url, {
+        expectedState: state
+      }, params).then((tokens) => {
         console.log(tokens)
         res.cookie('token', tokens.access_token, {
           httpOnly: true,
@@ -56,10 +69,35 @@ app.get('/hello', (req, res) => {
         });
         res.redirect('/');
       }).catch((e) => {
-        res.status(401).send(e);
+        console.log(e);
+        res.status(401).send(e.message);
       })
     } else {
       res.status(400).send("The server received a bad request");
+    }
+  });
+
+  app.get('/resource', (req, res) => {
+    console.log(req.cookies)
+    token = req.cookies.token
+    if (!token){
+      res.status(401).send("User not authenticated");
+    } else {
+      console.log(token);
+      fetch("https://api.github.com/user",   {
+        headers: {"Authorization": "Bearer "+token,}
+      })
+        .then(response => {
+          if (!response.ok) 
+            res.status(500).send("Unable to collect user information")
+          else 
+            return response.json();
+        })
+        .then(v => {
+          console.log(v);
+          res.json(v);
+        })
+        .catch(e => console.error('Error:', e));
     }
   });
 }

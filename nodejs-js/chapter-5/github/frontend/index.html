@@ -4,16 +4,30 @@
   <body>
     <script>
       function btnclick(elem){
-        if (elem.value == 'Login'){
-          elem.value = 'Logout';
-          window.location.href='/oauth/login';
-        } else {
-          elem.value = 'Login';
-          window.location.href='/oauth/logout';
-        }
+        if (elem.id == "login")
+          location.href = "/oauth/login";
+        else
+          location.href = "/oauth/logout";
       }
+
+      window.onload = function() {
+        fetch('/resource')
+          .then(res => {
+            if (!res.ok){
+              console.log("failed to load");
+              throw Error("Not logged in");
+            } else {
+              return res.json();
+            }
+          })
+          .then(v => {
+            const logout = document.getElementById("logout");
+            logout.insertAdjacentText('afterend', v["name"]);
+          }).catch(e => console.log(e));
+      };
     </script>
     <h1>GitHub User Profile</h1>
-    <button id="button" type="button" onclick="btnclick(this);">Login</button>
+    <button id="login" type="button" onclick="btnclick(this);">Login</button>
+    <button id="logout" type="button" onclick="btnclick(this);">Logout</button>
   </body>
 </html>
