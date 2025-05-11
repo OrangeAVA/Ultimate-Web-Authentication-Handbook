@@ -1,0 +1,19 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script>
+      function btnclick(elem){
+        if (elem.value == 'Login'){
+          elem.value = 'Logout';
+          window.location.href='/oauth/login';
+        } else {
+          elem.value = 'Login';
+          window.location.href='/oauth/logout';
+        }
+      }
+    </script>
+    <h1>GitHub User Profile</h1>
+    <button id="button" type="button" onclick="btnclick(this);">Login</button>
+  </body>
+</html>
