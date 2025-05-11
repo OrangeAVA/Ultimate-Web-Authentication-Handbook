@@ -44,8 +44,8 @@
       "program": "${workspaceFolder}/chapter-5/github/authcode.js",
       "cwd": "${workspaceFolder}/chapter-5/github",
       "env": {
-        "GH_CLIENT_ID": "d32e5b95d56027ba64e9",
-        "GH_CLIENT_SECRET": "aab845435e04a1faa0547e8f0725c1124ae3eb44"
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
       }
     }            
   ]
