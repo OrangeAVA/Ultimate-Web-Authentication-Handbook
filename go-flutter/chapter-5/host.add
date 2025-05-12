@@ -1,0 +1,7 @@
+# Add these values to the /etc/hosts file. 
+# On Windows, the file can be: C:\Windows\System32\drivers\etc\hosts
+
+127.0.0.5 mysrv.local
+127.0.0.2 idp.local
+127.0.0.3 finance.mysrv.local
+127.0.0.4 hr.mysrv.local

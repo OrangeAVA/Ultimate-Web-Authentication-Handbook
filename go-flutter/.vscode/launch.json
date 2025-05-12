@@ -1,0 +1,146 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ch1 main",
+      "cwd": "${workspaceFolder}/chapter-1",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-1/main.go"          
+    },
+    {
+      "name": "ch2 server",
+      "cwd": "${workspaceFolder}/chapter-2",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-2/server.go"          
+    },
+    {
+      "name": "ch3 main",
+      "cwd": "${workspaceFolder}/chapter-3",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-3/main.go"          
+    },
+    {
+      "name": "ch4 idp",
+      "cwd": "${workspaceFolder}/chapter-4/idp",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-4/idp/idp.go",
+      "preLaunchTask": "ch4 idp frontend"
+    },
+    {
+      "name": "ch4 finance",
+      "cwd": "${workspaceFolder}/chapter-4/finance",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-4/finance/finance.go",
+      "preLaunchTask": "ch4 finance delay frontend"
+    },
+    {
+      "name": "ch4 hr",
+      "cwd": "${workspaceFolder}/chapter-4/hr",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-4/hr/hr.go",
+      "preLaunchTask": "ch4 hr delay frontend"
+    },
+    {
+      "name": "ch5 github authcode",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-5/github/authcode.go",
+      "preLaunchTask": "ch5 github frontend",
+      "env": {
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
+      }
+    },
+    {
+      "name": "ch5 github device",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-5/github/device.go",
+      "env": {
+        "GH_CLIENT_ID": ""
+      }
+    },  
+    {
+      "name": "ch5 idp",
+      "cwd": "${workspaceFolder}/chapter-5/idp",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-5/idp/idp.go"
+    },
+    {
+      "name": "ch5 pkce resource",
+      "cwd": "${workspaceFolder}/chapter-5/pkce/resource",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-5/pkce/resource/server.go"
+    },
+    {
+      "name": "ch5 pkce client",
+      "cwd": "${workspaceFolder}/chapter-5/pkce/client",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "ch5 google oidc",
+      "cwd": "${workspaceFolder}/chapter-5/google",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-5/google/oidc.go",
+      "preLaunchTask": "ch5 google frontend",
+      "env": {
+        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_SECRET": ""
+      }
+    },
+    {
+      "name": "ch6 otp",
+      "cwd": "${workspaceFolder}/chapter-6/otp",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-6/otp/otp.go",
+      "preLaunchTask": "ch6 otp frontend"
+    },
+    {
+      "name": "ch6 webauthn",
+      "cwd": "${workspaceFolder}/chapter-6/webauthn",
+      "request": "launch",
+      "type": "go",
+      "mode": "debug",
+      "program": "chapter-6/webauthn/webauthn.go",
+      "preLaunchTask": "ch6 webauthn frontend"
+    },
+  ],
+  "compounds": [
+    {
+      "name": "ch4",
+      "configurations": ["ch4 idp", "ch4 hr", "ch4 finance"]
+    },
+    {
+      "name": "ch5 pkce",
+      "configurations": ["ch5 idp", "ch5 pkce client", "ch5 pkce resource"]
+    }
+  ]
+}

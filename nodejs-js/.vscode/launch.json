@@ -1,0 +1,52 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch1",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-1/index.js",
+      "cwd": "${workspaceFolder}/chapter-1"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch2",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-2/index.js",
+      "cwd": "${workspaceFolder}/chapter-2"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch3",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-3/index.js",
+      "cwd": "${workspaceFolder}/chapter-3"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 github authcode",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/github/authcode.js",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "env": {
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
+      }
+    }            
+  ]
+}
