@@ -47,6 +47,19 @@
         "GH_CLIENT_ID": "",
         "GH_CLIENT_SECRET": ""
       }
-    }            
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 github device",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/github/device.js",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "env": {
+        "GH_CLIENT_ID": ""
+      }
+    }              
   ]
 }

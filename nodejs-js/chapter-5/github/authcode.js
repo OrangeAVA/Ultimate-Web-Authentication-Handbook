@@ -84,9 +84,7 @@ app.get('/hello', (req, res) => {
       res.status(401).send("User not authenticated");
     } else {
       console.log(token);
-      fetch("https://api.github.com/user",   {
-        headers: {"Authorization": "Bearer "+token,}
-      })
+      oclient.fetchProtectedResource(config, token, new URL('https://api.github.com/user'), 'GET')
         .then(response => {
           if (!response.ok) 
             res.status(500).send("Unable to collect user information")
