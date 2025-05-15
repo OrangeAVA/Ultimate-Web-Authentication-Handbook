@@ -1,0 +1,134 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script src="/@otplib/preset-browser/buffer.js"></script>
+    <script src="/@otplib/preset-browser/index.js"></script>
+    <script>
+      var AUTH_SECRET="0123456789ABCDEF";
+      var AUTH_TYPE="totp";
+      var AUTH_PERIOD=30;
+      var AUTH_DIGITS=6;
+      var AUTH_COUNTER=1;
+
+      var intervalID = 0;
+      
+      function authenticator_update() {
+        if (AUTH_TYPE == "totp") {
+          document.getElementById("compute").disabled = true;
+          oldcounter = AUTH_COUNTER;
+          intervalID = setInterval(function(){
+              const secondsSinceEpoch = Math.floor(Date.now() / 1000);
+              const counter = Math.floor(secondsSinceEpoch / AUTH_PERIOD);
+              timer = (counter+1)*AUTH_PERIOD - secondsSinceEpoch;
+              if (counter != oldcounter){
+                document.getElementById("count").innerText = counter;
+                const token = otplib.authenticator.generate(AUTH_SECRET);
+                document.getElementById("otp").innerText = token;
+                oldcounter = counter;
+              }
+              document.getElementById("timer").innerText = timer;
+            }, 1000);
+          
+        } else {
+          if (intervalID) {
+            clearInterval(intervalID);
+            intervalId = 0;
+            AUTH_COUNTER = 1;
+          }
+          document.getElementById("count").innerText = AUTH_COUNTER;
+          document.getElementById("timer").innerText = "NA";
+          document.getElementById("compute").disabled = false;
+        }
+      };
+
+      async function register(elem){
+        if (intervalID) {
+          clearInterval(intervalID);
+          intervalId = 0;
+          AUTH_COUNTER = 1;
+        }
+        const user = document.getElementById("ruser").value;
+        const url = (elem.id == "rhotp") ? `/register/${user}/hotp` : `/register/${user}/totp`;
+        const res = await fetch(url);
+        const v = await res.json();
+        console.log(v);
+        AUTH_SECRET = v.secret;
+        AUTH_COUNTER = v.counter;
+        AUTH_TYPE = v.type;
+        document.getElementById("qrcode").src = v.qrfile;
+        document.getElementById("rtype").innerText = AUTH_TYPE;
+        document.getElementById("secret").innerText = AUTH_SECRET;
+        document.getElementById("count").innerText = AUTH_COUNTER;
+        authenticator_update();
+      }
+
+      function hotpCompute(){
+        if (AUTH_TYPE == "hotp"){
+          const token = otplib.hotp.generate(AUTH_SECRET, AUTH_COUNTER);
+          document.getElementById("otp").innerText = token;
+          AUTH_COUNTER += 1;
+          document.getElementById("count").innerText = AUTH_COUNTER;
+        }
+      }
+
+      async function validate(){
+        const user = document.getElementById("ruser").value;
+        const token = document.getElementById("votp").value;
+        const url = `/validate/${user}/${token}`;
+        const res = await fetch(url);
+        const text = await res.text();
+        document.getElementById("vstatus").innerText = text;
+      }
+
+    </script>
+    <table width="100%">
+      <tr>
+        <td width="33%"><center><b>Registration<b/></center></td>
+        <td width="33%"><center><b>Validate<b/></center></td>
+        <td width="33%"><center><b>Authenticator<b/></center></td>
+      </tr>
+      <tr>
+        <td>
+          <center>
+            <table>
+              <tr><td><label for="ruser">Username</label></td><td><input id="ruser" type="text" value="alice" disabled/></td></tr>
+              <tr><td align="center" colspan="2"><img id="qrcode" src="images/no-qrcode.png"/></td></tr>
+              <tr><td id="secret" align="center" colspan="2">ABCDEFGHIJKLMNOP</td></tr>
+              <tr><td align="center" colspan="2">
+                <table>
+                  <tr><td align="right">Type</td><td id="rtype">totp</td></tr>
+                  <tr><td align="right">Algorithm</td><td>sha1</td></tr>
+                  <tr><td align="right">Digits</td><td>6</td></tr>
+                  <tr><td align="right">Period</td><td>30</td></tr>                                                      
+                </table>
+              </td></tr>
+              <tr><td align="center" colspan="2"><button id="rhotp" type="button" onclick="register(this);">Generate New HOTP Key</button></td></tr>
+              <tr><td align="center" colspan="2"><button id="rtotp" type="button" onclick="register(this);">Generate New TOTP Key</button></td></tr>                                                        
+            </table>
+          </center>
+        </td>
+        <td valign="top">
+          <center>
+            <table>
+              <tr><td><label for="vuser">Username</label></td><td><input id="vuser" type="text" value="alice" disabled/></td></tr>
+              <tr><td><label for="votp">OTP</label></td><td><input id="votp" type="text" value="123456"/></td></tr>
+              <tr><td align="center" colspan="2"><button id="validate" type="button" onclick="validate();">Validate OTP</button></td></tr>
+              <tr><td id="vstatus" align="center" colspan="2">Not Validated</td></tr>
+            </table>
+          </center>
+        </td>
+        <td valign="top">
+          <center>
+            <table>
+              <tr><td align="right">Count</td><td id="count" align="left">100</td></tr>
+              <tr><td align="right">OTP</td><td id="otp" align="left">123456</td></tr>
+              <tr><td id="timer" align="center" colspan="2">29</td></tr>
+              <tr><td align="center" colspan="2"><button id="compute" type="button" onclick="hotpCompute();">Compute</button></td></tr>
+            </table>
+          </center>
+        </td>        
+      </tr>
+    </table>
+  </body>
+</html>
