@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "fido2-lib": "^3.5.3",
+    "https": "^1.0.0",
+    "js-base64": "^3.7.7"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

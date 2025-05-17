@@ -80,18 +80,16 @@ app.get('/validate/:user/:otp', (req, res) => {
 });
 
 
-const path = require("path");
-const scertpath = path.join("..", "certs");
+const p = require("path");
+const scertpath = p.join("..", "certs");
 const fs = require("fs");
-const { error } = require("console");
-const { emitKeypressEvents } = require("readline");
 
 var tlsopts = {
-  key:  fs.readFileSync(path.join(scertpath, "mysrv.local.key")),
+  key:  fs.readFileSync(p.join(scertpath, "mysrv.local.key")),
   passphrase: "password",
   cert: Buffer.concat([
-    fs.readFileSync(path.join(scertpath, "mysrv.local.crt")),
-    fs.readFileSync(path.join(scertpath, "sint.crt"))
+    fs.readFileSync(p.join(scertpath, "mysrv.local.crt")),
+    fs.readFileSync(p.join(scertpath, "sint.crt"))
   ])
 };
 

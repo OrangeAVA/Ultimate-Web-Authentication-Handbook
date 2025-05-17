@@ -60,6 +60,16 @@
       "env": {
         "GH_CLIENT_ID": ""
       }
-    }              
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 webauthn",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-6/webauthn/index.js",
+      "cwd": "${workspaceFolder}/chapter-6/webauthn"
+    }                  
   ]
 }
