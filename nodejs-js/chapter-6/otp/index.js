@@ -79,8 +79,6 @@ app.get('/validate/:user/:otp', (req, res) => {
   }
 });
 
-
-const p = require("path");
 const scertpath = p.join("..", "certs");
 const fs = require("fs");
 
