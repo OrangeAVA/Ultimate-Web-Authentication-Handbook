@@ -64,6 +64,20 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "ch5 google oidc",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/google/index.js",
+      "cwd": "${workspaceFolder}/chapter-5/google",
+      "env": {
+        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_SECRET": ""
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "ch6 otp",
       "skipFiles": [
         "<node_internals>/**"

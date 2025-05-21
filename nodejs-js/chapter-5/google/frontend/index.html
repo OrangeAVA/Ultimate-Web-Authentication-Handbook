@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two Column Tables</title>
+  <style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    .column {
+        width: 45%;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
+  <script>
+    function btnclick(elem){
+      if (elem.id == "login")
+        location.href = "/oauth/login";
+      else
+        location.href = "/oauth/logout";
+    }
+
+    function jsonObjectToTable(jsonObj, containerId) {
+      const container = document.getElementById(containerId);
+      
+      const table = document.createElement("table");
+      const headerRow = document.createElement("tr");
+      const headers = ["Attribute", "Value"];
+      headers.forEach(header => {
+          const th = document.createElement("th");
+          th.textContent = header;
+          headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+      
+      Object.entries(jsonObj).forEach(([key, value]) => {
+        const row = document.createElement("tr");
+        const keyCell = document.createElement("td");
+        keyCell.textContent = key;
+        row.appendChild(keyCell);
+
+        const valueCell = document.createElement("td");
+        if (key == "picture") {
+          const img = document.createElement("img");
+          img.src = value;
+          img.style.width = "50px";
+          img.style.height = "50px";
+          valueCell.appendChild(img);
+        } else if (key == "email_verified") {
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = value;
+          checkbox.disabled = true; 
+          valueCell.appendChild(checkbox);
+        } else {
+          valueCell.textContent = value;
+        }
+        row.appendChild(valueCell);
+        table.appendChild(row);
+      });
+      container.appendChild(table);
+    }
+
+    function update_userinfo() {
+      fetch('/userinfo')
+      .then(res => res.json())
+      .then(v => {
+        console.log(v);
+        jsonObjectToTable(v, "userinfo");
+      }).catch(e => console.log(e));
+    }
+
+    function update_idtoken() {
+      fetch('/idtoken')
+      .then(res => res.json())
+      .then(v => {
+        console.log(v);
+        jsonObjectToTable(v, "idtoken");
+      }).catch(e => console.log(e));
+    }
+
+    window.onload = function() {
+      update_userinfo();
+      update_idtoken();
+    };
+
+  </script>
+</head>
+<body>
+    <h1>Google OIDC Example</h1>
+    <button id="login" type="button" onclick="btnclick(this);">Login</button>
+    <button id="logout" type="button" onclick="btnclick(this);">Logout</button>  
+    <div class="container">
+        <div class="column">
+            <h2>User Info</h2>
+            <pre id="userinfo"></pre>
+        </div>
+        <div class="column">
+            <h2>ID Token</h2>
+            <pre id="idtoken"></pre>
+        </div>
+    </div>
+</body>
+</html>
