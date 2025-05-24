@@ -3,62 +3,72 @@ const app = express();
 app.use(express.static('frontend'));
 app.use(express.json({ limit: '10mb' }));
 
-const faceapi = require('@vladmandic/human');
- 
- // Load models
+const tf = require('@tensorflow/tfjs-node');
+const log = require('@vladmandic/pilogger');
+const Human = require('@vladmandic/human');
 
-//faceapi.nets.tinyFaceDetector.loadFromDisk('./model');
-faceapi.nets.ssdMobilenetv1.loadFromDisk('./model')
-.then(()=>{
-  app.listen(8080, () => console.log('Server running on http://localhost:8080'));
-});
-//await faceapi.nets.faceRecognitionNet.loadFromDisk('./models');
-//await faceapi.nets.faceLandmark68Net.loadFromDisk('./models');
+let human = null;
 
-const canvas = require('canvas');
+const myConfig = {
+  modelBasePath: 'file://node_modules/@vladmandic/human/models/',
+  debug: true,
+  face: { emotion: { enabled: false } },
+  body: { enabled: false },
+  hand: { enabled: false },
+  gesture: { enabled: false },
+};
 
-const { Canvas, Image, ImageData } = canvas
-faceapi.env.monkeyPatch({ Canvas, Image, ImageData })
+async function init() {
+  human = new Human.Human(myConfig);
+  await human.tf.ready();
+  log.info('Human:', human.version, 'TF:', tf.version_core);
+  await human.load();
+  log.info('Loaded:', human.models.loaded());
+  log.info('Memory state:', human.tf.engine().memory());
+}
 
- // Function to compare faces
-async function compareFaces(image1Path, image2Path) {
-  // Load images
-  const image1 = await canvas.loadImage(image1Path);
-  const image2 = await canvas.loadImage(image2Path);
+const { dataUriToBuffer } = require('data-uri-to-buffer');
 
-  console.log("Loaded the images successfully");
- 
-  // Detect faces and compute descriptors
-  const detection1 = await faceapi.detectSingleFace(image1).withFaceLandmarks().withFaceDescriptor();
-  if (!detection1) {
-    throw new Error("No faces detected in one or both images.");
-  } else {
-    console.log("Detected face image in both images.")
+async function getDescriptors(imagedata){
+  const decoded = dataUriToBuffer(imagedata);
+  const buffer = new Uint8Array(decoded.buffer);
+  const tensor = tf.node.decodeImage(buffer, 3);
+  log.state('Loaded image size:', tensor.shape);
+  const result = await human.detect(tensor, myConfig);
+  tf.dispose(tensor);
+  log.state('Detected faces:', result.face.length);
+  return result;
+}
+
+async function compareFaces(imgdata1, imgdata2) {
+  const res1 = await getDescriptors(imgdata1);
+  const res2 = await getDescriptors(imgdata2);
+  if (!res1 || !res1.face || res1.face.length === 0 || !res2 || !res2.face || res2.face.length === 0) {
+    throw new Error('Could not detect face descriptors');
   }
-  const detection2 = await faceapi.detectSingleFace(image2).withFaceLandmarks().withFaceDescriptor()
-  if (!detection2) {
-    throw new Error("No faces detected in one or both images.");
-  } else {
-    console.log("Detected face image in both images.")
-  }
- 
-  // Calculate distance between descriptors
-  const distance = faceapi.euclideanDistance(detection1.descriptor, detection2.descriptor);
- 
-  return distance;
+  const similarity = human.match.similarity(res1.face[0].embedding, res2.face[0].embedding, { order: 2 });
+  log.data('Similarity: ', similarity);
+  return similarity;
 }
 
 app.post("/compare", (req, res) => {
-  //const hlen = "data:image/png;base64,".length;
   const img1 = req.body.img1;
   const img2 = req.body.img2;
 
   compareFaces(img1, img2)
   .then(d => {
-    res.json({"distance": d});
+    res.json({"similarity": d});
   })
   .catch(e => {
     console.error(e)
     res.status(500).json({"error": e.message})
   });
 });
+
+init()
+.then(()=>{
+  app.listen(8080, () => console.log('Server running on http://localhost:8080'));
+}).catch(e =>{
+  log.error("Unable to start the engine. Exiting...")
+  process.exit(1);
+})

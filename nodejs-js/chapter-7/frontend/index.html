@@ -89,7 +89,6 @@
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const imageData = canvas.toDataURL('image/png');
-      console.log(imageData);
       if (captureCount === 0) {
         image1.src = imageData;
       } else {
@@ -109,7 +108,14 @@
           img1: image1.src,
           img2: image2.src
         })
-      });
+      })
+      .then(res => res.json())
+      .then(v=>{
+        if (v.error)
+          result.innerText = `Error: ${v.error}`;
+        else
+          result.innerText = `Similarity: ${v.similarity}`;
+      })
     }
 
     // Event listener for capture button
