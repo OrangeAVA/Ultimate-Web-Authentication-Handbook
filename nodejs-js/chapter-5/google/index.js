@@ -9,10 +9,8 @@ app.use(sess({
   secret: "password"
 }));
 
-
 {
   const oclient = require("openid-client");
-
   const cid = process.env.GOOGLE_CLIENT_ID;
   const csecret = process.env.GOOGLE_CLIENT_SECRET;
   console.log(cid, " ", csecret);
@@ -21,28 +19,17 @@ app.use(sess({
     process.exit(1);
   }
 
+  const states = new Set();
   var config
   oclient.discovery(new URL("https://accounts.google.com"), cid, csecret)
-    .then(cnf=>{config=cnf})
-    .catch(e=>{
-      console.error("Error discovering the OpenID Connect provider: ", e);
-      process.exit(1);
-    });
-  
-  function loop(c){
-    if (c <= 0) {
-      console.error("Error discovering the OpenID Connect provider")
-      process.exit(1);
-    }
-    setTimeout(() => {
-      if (!config) {
-        loop(c-1);
-      }
-    }, 1000);
-  }
-  loop(10);
-
-  const states = new Set();
+  .then(cnf=>{
+    config=cnf;
+    app.listen(8444, () => console.log('Server running on http://localhost:8444'));
+  })
+  .catch(e=>{
+    console.error("Error discovering the OpenID Connect provider: ", e);
+    process.exit(1);
+  });
 
   app.get('/oauth/login', (req, res) => {
     const state = oclient.randomState();
@@ -130,5 +117,3 @@ app.use(sess({
     res.json(decoded);
   });
 }
-
-app.listen(8444, () => console.log('Server running on http://localhost:8444'));

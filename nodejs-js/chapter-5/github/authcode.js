@@ -103,8 +103,6 @@ app.get('/hello', (req, res) => {
 const path = require("path");
 const scertpath = path.join("..", "certs");
 const fs = require("fs");
-const { error } = require("console");
-const { emitKeypressEvents } = require("readline");
 
 var tlsopts = {
   key:  fs.readFileSync(path.join(scertpath, "mysrv.local.key")),
