@@ -94,6 +94,16 @@
       ],
       "program": "${workspaceFolder}/chapter-6/webauthn/index.js",
       "cwd": "${workspaceFolder}/chapter-6/webauthn"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch7 Face Match",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-7/face.js",
+      "cwd": "${workspaceFolder}/chapter-7/"
     }                  
   ]
 }

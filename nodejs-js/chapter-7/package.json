@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "@vladmandic/human": "^3.3.5",
+    "@vladmandic/pilogger": "^0.5.1",
+    "data-uri-to-buffer": "^6.0.2",
+    "express": "^5.1.0"
+  }
+}

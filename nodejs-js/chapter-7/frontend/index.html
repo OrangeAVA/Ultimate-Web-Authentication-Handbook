@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Image Capture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin: 20px;
+    }
+    video, canvas {
+      border: 1px solid #ccc;
+      max-width: 100%;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .image-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .captured-image {
+      max-width: 200px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Webcam Image Capture</h1>
+  <video id="video" width="640" height="480" autoplay></video>
+  <button id="captureBtn">Capture Image</button>
+  <button id="compareBtn" disabled>Compare Images</button>
+  <div class="image-container">
+    <div>
+      <h3>Image 1</h3>
+      <img id="image1" class="captured-image" alt="First captured image">
+    </div>
+    <div>
+      <h3>Image 2</h3>
+      <img id="image2" class="captured-image" alt="Second captured image">
+    </div>
+    <div>
+      <h3>Result</h3>
+      <p id="result">Comparison result.</p>
+    </div>
+  </div>
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const compareBtn = document.getElementById('compareBtn');
+    const image1 = document.getElementById('image1');
+    const image2 = document.getElementById('image2');
+    const result = document.getElementById('result');
+    let captureCount = 0;
+
+    // Access the webcam
+    async function startWebcam() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+      } catch (err) {
+        console.error('Error accessing webcam:', err);
+        alert('Could not access the webcam. Please ensure it is connected and permissions are granted.');
+      }
+    }
+
+    // Capture image from video feed
+    function captureImage() {
+      if (captureCount >= 2) {
+        alert('You have already captured two images.');
+        return;
+      }
+
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = canvas.toDataURL('image/png');
+      if (captureCount === 0) {
+        image1.src = imageData;
+      } else {
+        image2.src = imageData;
+        compareBtn.disabled = false; // Enable compare button after second image
+      }
+      captureCount++;
+    }
+
+    function compareImages(){
+      fetch('/compare', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          img1: image1.src,
+          img2: image2.src
+        })
+      })
+      .then(res => res.json())
+      .then(v=>{
+        if (v.error)
+          result.innerText = `Error: ${v.error}`;
+        else
+          result.innerText = `Similarity: ${v.similarity}`;
+      })
+    }
+
+    // Event listener for capture button
+    captureBtn.addEventListener('click', captureImage);
+    compareBtn.addEventListener('click', compareImages);
+
+    // Start the webcam when the page loads
+    window.onload = startWebcam;
+  </script>
+</body>
+</html>
