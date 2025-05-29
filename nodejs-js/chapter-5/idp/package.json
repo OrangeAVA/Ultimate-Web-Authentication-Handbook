@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "oidc-provider": "^9.1.1"
+  },
+  "scripts": {
+    "start": "DEBUG=oidc-provider:* node idp.js"
+  }
+}

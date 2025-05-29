@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "wait-for-ch5-idp-and-resource",
+      "type": "shell",
+      "command": "sh",
+      "args": [
+        "-c",
+        // Wait for both IDP and Resource server to be available on their respective ports
+        "until nc -z localhost 8443 && nc -z localhost 8444; do sleep 1; done"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

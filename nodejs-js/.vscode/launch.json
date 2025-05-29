@@ -78,6 +78,41 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "ch5 idp",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/chapter-5/idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 pkce resource server",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "resource"],
+      "cwd": "${workspaceFolder}/chapter-5/pkce"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 pkce client",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "client"],
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "preLaunchTask": "wait-for-ch5-idp-and-resource"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "ch6 otp",
       "skipFiles": [
         "<node_internals>/**"
@@ -105,5 +140,16 @@
       "program": "${workspaceFolder}/chapter-7/face.js",
       "cwd": "${workspaceFolder}/chapter-7/"
     }                  
+  ],
+  "compounds": [
+    {
+      "name": "ch5 pkce",
+
+      "configurations": [
+        "ch5 idp",
+        "ch5 pkce resource server",
+        "ch5 pkce client"
+      ],
+    },
   ]
 }

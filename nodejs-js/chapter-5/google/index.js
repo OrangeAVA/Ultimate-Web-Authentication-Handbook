@@ -15,7 +15,7 @@ app.use(sess({
   const csecret = process.env.GOOGLE_CLIENT_SECRET;
   console.log(cid, " ", csecret);
   if (!cid || !csecret) {
-    console.error("Please set the environment variables GH_CLIENT_ID and GH_CLIENT_SECRET");
+    console.error("Please set the environment variables GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET");
     process.exit(1);
   }
 
