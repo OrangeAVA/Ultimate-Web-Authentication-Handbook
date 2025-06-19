@@ -5,8 +5,11 @@
     "openid-client": "^6.5.0",
     "openurl": "^1.1.1"
   },
+  "env": {
+    "NODE_EXTRA_CA_CERTS": "../certs/sroot.crt"
+  },
   "scripts": {
-    "client": "NODE_EXTRA_CA_CERTS=../certs/sroot.crt node client.js",
+    "client": "node client.js",
     "resource": "node resource.js"
   }
 }

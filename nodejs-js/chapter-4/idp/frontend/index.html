@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Identity Provider Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title {
+      font-size: 1.8em;
+      font-weight: bold;
+      text-align: left;
+    }
+    .auth-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .username-field {
+      border: none;
+      background: #f0f0f0;
+      padding: 5px 10px;
+      border-radius: 4px;
+      min-width: 120px;
+    }
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .panel {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 18px;
+      background: #fafafa;
+    }
+    .panel-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    td.fixed {
+      font-family: "Fira Mono", "Consolas", "Menlo", "Monaco", "Liberation Mono", monospace;
+    }
+    th {
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">Identity Provider Portal</div>
+    <div class="auth-controls">
+      <input type="text" id="username" class="username-field" placeholder="Not logged in" readonly>
+      <button id="loginBtn">Login</button>
+      <button id="logoutBtn" disabled>Logout</button>
+    </div>
+  </div>
+  <div class="panel-grid">
+    <div class="panel">
+      <div class="panel-title">Users Data</div>
+      <div id="usersError" style="color: #b00; display: none; margin-bottom: 10px;"></div>
+      <table id="usersTableContainer">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Groups</th></tr>
+        </thead>
+        <tbody id="usersTable">
+          <tr>
+            <td>Alice</td>
+            <td>alice@example.com</td>
+            <td>admin, users</td>
+          </tr>
+          <tr>
+            <td>Bob</td>
+            <td>bob@example.com</td>
+            <td>users</td>
+          </tr>
+        </tbody>
+      </table>
+      <script>
+        function renderUsersTable(users) {
+          document.getElementById('usersError').style.display = 'none';
+          document.getElementById('usersTableContainer').style.display = '';
+          const tbody = document.getElementById('usersTable');
+          tbody.innerHTML = '';
+          Object.values(users).forEach(user => {
+            const tr = document.createElement('tr');
+            const name = user.displayName || (user.name ? (user.name.givenName + ' ' + user.name.familyName) : user.id);
+            const email = user.emails && user.emails.length ? user.emails[0].value : '';
+            const groups = user.groups ? user.groups.join(', ') : '';
+            tr.innerHTML = `<td>${name}</td><td>${email}</td><td>${groups}</td>`;
+            tbody.appendChild(tr);
+          });
+        }
+
+        function showUsersError(msg) {
+          document.getElementById('usersTableContainer').style.display = 'none';
+          const errDiv = document.getElementById('usersError');
+          errDiv.textContent = msg;
+          errDiv.style.display = '';
+        }
+
+        function fetchAndRenderUsers() {
+          fetch('/admin/users')
+        .then(res => {
+          if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
+          return res.json();
+        })
+        .then(data => renderUsersTable(data))
+        .catch(err => showUsersError(err.message));
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchAndRenderUsers);
+      </script>
+    </div>
+    <div class="panel">
+      <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Services</span>
+        <button id="refreshServicesBtn" title="Refresh services">&#x21bb;</button>
+        <script>
+          function renderServicesTable(services) {
+            const tbody = document.getElementById('servicesTable');
+            tbody.innerHTML = '';
+            services.forEach(svc => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>
+                  <div><strong>${svc.displayName || svc.entityID}</strong></div>
+                  <div style="font-size:0.8em;color:#666;">Desc: ${svc.description || ''}</div>
+                  <div style="font-size:0.8em;color:#555;">EntityId: ${svc.entityID}</div>
+                  <div style="font-size:0.8em;color:#888;">Metadata URL: ${svc.metadataURL}</div>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+
+          function renderAppLinkTable(services) {
+            console.log('Rendering app links table with services:', services);
+            const tbody = document.getElementById('appLinksTable');
+            tbody.innerHTML = '';
+            services.forEach(svc => {
+              const tr = document.createElement('tr');
+              tr.style.cursor = 'pointer';
+              tr.innerHTML = `
+                <td>
+                  <a href="/admin/shortcuts/${svc.code}" target="_blank">
+                    ${svc.displayName}
+                  </a>
+                </td>
+                <td>${svc.description || ''}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+
+          function fetchAndRenderServices() {
+            fetch('/admin/services', {method:'POST'})
+              .then(res => {
+                if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
+                return res.json();
+              })
+              .then(data => {
+                renderServicesTable(data);
+                renderAppLinkTable(data);
+              })
+              .catch(err => {
+                const tbody = document.getElementById('servicesTable');
+                tbody.innerHTML = `<tr><td style="color:#b00;">${err.message}</td></tr>`;
+              });
+          }
+
+          document.getElementById('refreshServicesBtn').addEventListener('click', function(e) {
+            fetchAndRenderServices();
+          });
+
+          window.addEventListener('DOMContentLoaded', fetchAndRenderServices);
+        </script>
+      </div>
+      <table>
+        <tbody id="servicesTable">
+          <tr>
+            <td>
+              <div><strong>Service One</strong></div>
+              <div style="font-size:0.8em;color:#666;">Desc: Example service one</div>
+              <div style="font-size:0.8em;color:#555;">EntityId: https://service1.example.com/metadata</div>
+              <div style="font-size:0.8em;color:#888;">Metadata URL: https://service1.example.com/metadata</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div><strong>Service Two</strong></div>
+              <div style="font-size:0.8em;color:#666;">Desc: Example service two</div>
+              <div style="font-size:0.8em;color:#555;">EntityId: https://service2.example.com/metadata</div>
+              <div style="font-size:0.8em;color:#888;">Metadata URL: https://service2.example.com/metadata</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-title">App Links</div>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>SP</th></tr>
+        </thead>
+        <tbody id="appLinksTable">
+          <tr style="cursor:pointer" onclick="window.location='https://service1.example.com/'">
+        <td>App One</td>
+        <td>https://service1.example.com/</td>
+          </tr>
+          <tr style="cursor:pointer" onclick="window.location='https://service2.example.com/'">
+        <td>App Two</td>
+        <td>https://service2.example.com/</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Logged in Sessions</div>
+      <div id="sessionsError" style="color: #b00; display: none; margin-bottom: 10px;"></div>
+      <table id="sessionsTableContainer">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>CreateTime</th>
+            <th>ExpireTime</th>
+            <th>UserName</th>
+            <th>IP Address</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTable">
+          <tr>
+            <td>sess-123</td>
+            <td>2024-06-01 10:00</td>
+            <td>2024-06-01 12:00</td>
+            <td>Alice</td>
+            <td>127.0.0.1</td>
+          </tr>
+        </tbody>
+      </table>
+      <script>
+        function renderSessionsTable(sessions) {
+          const tbody = document.getElementById('sessionsTable');
+          tbody.innerHTML = '';
+          sessions.forEach(sess => {
+            const tr = document.createElement('tr');
+            const name = sess.displayName || sess.username || '';
+            // Use Intl.DateTimeFormat for formatting if available
+            sess.sessionId = (sess.sessionId || '').toString().slice(0, 8);
+            function formatTime(ms) {
+              if (!ms) return '';
+              return new Intl.DateTimeFormat('en-CA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              }).format(new Date(ms)).replace(',', '');
+            }
+            sess.loginTime = formatTime(sess.loginTime);
+            sess.expiryTime = formatTime(sess.expiryTime);
+            tr.innerHTML = `
+              <td class="fixed">${sess.sessionId}</td>
+              <td class="fixed">${sess.loginTime || ''}</td>
+              <td class="fixed">${sess.expiryTime || ''}</td>
+              <td>${name}</td>
+              <td class="fixed">${sess.ip}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        function showSessionsError(msg) {
+          document.getElementById('sessionsTableContainer').style.display = 'none';
+          const errDiv = document.getElementById('sessionsError');
+          errDiv.textContent = msg;
+          errDiv.style.display = '';
+        }
+        function fetchAndRenderSessions() {
+          fetch('/admin/active-sessions')
+          .then(res => {
+            if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
+            return res.json();
+          })
+          .then(data => {
+            document.getElementById('sessionsError').style.display = 'none';
+            document.getElementById('sessionsTableContainer').style.display = '';
+            renderSessionsTable(data);
+          })
+          .catch(err => showSessionsError(err.message));
+        };
+        window.addEventListener('DOMContentLoaded', fetchAndRenderSessions);
+      </script>
+    </div>
+  </div>
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const usernameField = document.getElementById('username');
+
+    function updateUserData() {
+      fetch('/auth/user')
+        .then(response => response.json())
+        .then(data => {
+          usernameField.value = data.user || '';
+          loginBtn.disabled = !!data.user;
+          logoutBtn.disabled = !data.user;
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+          usernameField.value = '';
+          loginBtn.disabled = false;
+          logoutBtn.disabled = true;
+        });
+    }
+
+    loginBtn.onclick = function() {
+      window.location = '/auth/login';
+    };
+    logoutBtn.onclick = function() {
+      fetch('/auth/logout')
+      .then(_ => {
+        window.location.reload();
+      });
+    };
+    window.onload = updateUserData;
+  </script>
+</body>
+</html>

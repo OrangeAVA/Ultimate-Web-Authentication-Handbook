@@ -37,6 +37,51 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "ch4 idp",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "env":{
+        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
+      },
+      "cwd": "${workspaceFolder}/chapter-4/idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch4 finance",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "env":{
+        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
+      },
+      "cwd": "${workspaceFolder}/chapter-4/finance"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch4 hr",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "env":{
+        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
+      },
+      "cwd": "${workspaceFolder}/chapter-4/hr"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "ch5 github authcode",
       "skipFiles": [
         "<node_internals>/**"
