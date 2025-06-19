@@ -1,3 +1,19 @@
+/**
+ * Face Comparison Server using Express and @vladmandic/human
+ *
+ * This code sets up an Express server that exposes an endpoint to compare two
+ * face images using the @vladmandic/human library and TensorFlow.js. It loads
+ * models, decodes images, detects faces, and computes similarity between face
+ * embeddings.
+ *
+ * Steps performed:
+ * - Initializes Express server and serves static frontend files.
+ * - Loads and configures the @vladmandic/human face detection library.
+ * - Provides a POST endpoint `/compare` to accept two images in data URI format.
+ * - Decodes images, detects faces, and extracts face embeddings.
+ * - Computes similarity between the two face embeddings.
+ * - Returns the similarity score as JSON.
+ */
 const express = require("express");
 const app = express();
 app.use(express.static('frontend'));
