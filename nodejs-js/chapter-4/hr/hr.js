@@ -64,13 +64,15 @@ async function config_saml_sp(app){
     
   const {SAML} = require('@node-saml/node-saml');
   const saml = new SAML({
-    callbackUrl: 'https://hr.mysrv.local:8444/saml/acs',
+    callbackUrl: 'https://hr.mysrv.local:8444/saml/acs', 
+    logoutCallbackUrl: 'https://hr.mysrv.local:8444/saml/acs',
+    entryPoint,
+    logoutUrl,
     issuer: 'https://hr.mysrv.local:8444/saml',
+    identifierFormat: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
     idpCert,
     publicCert,
     privateKey,
-    logoutUrl,
-    entryPoint,
     acceptedClockSkewMs: 10000,
     wantAssertionsSigned: true,
     wantAuthnResponseSigned: false
@@ -82,21 +84,49 @@ async function config_saml_sp(app){
     res.send(metadata);
   });
 
-  app.post('/saml/acs', express.urlencoded({ extended: false }), (req, res) => {
-    saml.validatePostResponseAsync(req.body)
-      .then(({ profile, loggedOut }) => {
-        console.log('SAML assertion processed successfully:', profile);
-        req.session.profile = profile;
-        if (loggedOut) {
-          console.log('User logged out via SAML');
-          req.session?.destroy();
-        }
-        return res.redirect('/');
-      })
-      .catch(err => {
-        console.error('Error processing SAML assertion:', err);
-        res.status(500).send('Internal Server Error');
-      });
+  app.post('/saml/acs', (req, res) => {
+    if (req.body?.SAMLResponse) {
+      saml.validatePostResponseAsync(req.body)
+        .then(({ profile, loggedOut }) => {
+          console.log('SAML assertion processed successfully:', profile);
+          if (loggedOut) {
+            console.log('User logged out via SAML');
+            if (req.session?.profile) {
+              console.log('Removing user session:', req.session.profile.nameID);
+              delete req.session.profile;
+            }
+          } else {
+            req.session.profile = profile;
+            req.session.save();
+            console.log('User session created:', profile.nameID);
+          }
+          return res.redirect('/');
+        })
+        .catch(err => {
+          console.error('Error processing SAML assertion:', err);
+          res.status(500).send('Internal Server Error');
+        });
+    } else if (req.body?.SAMLRequest) {
+      saml.validatePostRequestAsync(req.body)
+        .then(({ profile, loggedOut }) => {
+          if (!loggedOut) throw new Error('Unexpected SAML request without logout');
+          if (req.session?.profile) {
+            console.log('Removing user session:', req.session.profile.nameID);
+            delete req.session.profile;
+          }
+          console.log("Profile data:", profile);
+          console.log("RelayState:", req.body.RelayState);
+          return saml.getLogoutResponseUrlAsync(profile, req.body.RelayState, {}, true);
+        })
+        .then(logoutUrl => {
+          console.log('Redirecting to SAML logout URL:', logoutUrl);
+          res.redirect(logoutUrl);
+        })
+        .catch(err => {
+          console.error('Error processing SAML request:', err);
+          res.status(500).send('Internal Server Error');
+        });
+    }
   });
 
   app.get('/auth/logout', (req, res) => {
@@ -106,7 +136,6 @@ async function config_saml_sp(app){
       console.log('Logging out user:', req.session.profile.nameID);
     }
     delete req.session.profile;
-    delete req.session.user;
     res.redirect('/');
   });
 
@@ -164,6 +193,13 @@ const express = require("express");
 const app = express();
 app.use(express.static('frontend'));
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://idp.local:8443');
+    next();
+  }
+);
 
 const maxAge = 1000 * 60 * 60 * 2; // 2 hours
 var session = require('express-session');

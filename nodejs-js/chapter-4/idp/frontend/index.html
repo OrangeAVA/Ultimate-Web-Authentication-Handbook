@@ -119,7 +119,7 @@
         }
 
         function fetchAndRenderUsers() {
-          fetch('/admin/users')
+          fetch('/admin/users', {credentials: 'same-origin'})
         .then(res => {
           if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
           return res.json();
@@ -153,6 +153,28 @@
             });
           }
 
+          function idpLogOut(code){
+            // Open a popup window for logout
+            
+            const popup = window.open(`/idp/logout?service=${code}`, 'idpLogout', 'width=500,height=600');
+            if (!popup) {
+              alert('Popup blocked! Please allow popups for this site to log out.');
+              return;
+            }
+
+            // Optionally, monitor when the popup closes and refresh services
+            const timer = setInterval(() => {
+              if (popup.closed) {
+                clearInterval(timer);
+                window.location.reload(true);
+              }
+            }, 500);
+          }
+
+          function showLogoutButton(svc) {
+            return svc.loggedIn ? `<button onclick=idpLogOut('${svc.code}')>Logout</button>`: '';
+          }
+
           function renderAppLinkTable(services) {
             console.log('Rendering app links table with services:', services);
             const tbody = document.getElementById('appLinksTable');
@@ -167,13 +189,14 @@
                   </a>
                 </td>
                 <td>${svc.description || ''}</td>
+                <td>${showLogoutButton(svc)}</td>
               `;
               tbody.appendChild(tr);
             });
           }
 
           function fetchAndRenderServices() {
-            fetch('/admin/services', {method:'POST'})
+            fetch('/admin/services', {method:'POST', credentials: 'same-origin'})
               .then(res => {
                 if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
                 return res.json();
@@ -220,7 +243,7 @@
       <div class="panel-title">App Links</div>
       <table>
         <thead>
-          <tr><th>Name</th><th>SP</th></tr>
+          <tr><th>Name</th><th>SP</th><th>Action</th></tr>
         </thead>
         <tbody id="appLinksTable">
           <tr style="cursor:pointer" onclick="window.location='https://service1.example.com/'">
@@ -296,7 +319,7 @@
           errDiv.style.display = '';
         }
         function fetchAndRenderSessions() {
-          fetch('/admin/active-sessions')
+          fetch('/admin/active-sessions', {credentials: 'same-origin'})
           .then(res => {
             if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
             return res.json();
@@ -318,7 +341,7 @@
     const usernameField = document.getElementById('username');
 
     function updateUserData() {
-      fetch('/auth/user')
+      fetch('/auth/user', {credentials: 'same-origin'})
         .then(response => response.json())
         .then(data => {
           usernameField.value = data.user || '';
@@ -337,10 +360,7 @@
       window.location = '/auth/login';
     };
     logoutBtn.onclick = function() {
-      fetch('/auth/logout')
-      .then(_ => {
-        window.location.reload();
-      });
+      window.location = '/auth/logout';
     };
     window.onload = updateUserData;
   </script>

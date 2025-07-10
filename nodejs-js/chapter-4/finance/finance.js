@@ -52,16 +52,6 @@ async function config_saml_sp(app){
     entryPoint = ssoServices.$.Location;
   }
 
-  // Handle SingleLogoutService endpoints
-  const sloServices = idpMetadata.EntityDescriptor.IDPSSODescriptor.SingleLogoutService;
-  let logoutUrl = '';
-  if (Array.isArray(sloServices)) {
-    const sloRedirect = sloServices.find(s => s.$.Binding.includes('HTTP-Redirect'));
-    logoutUrl = sloRedirect ? sloRedirect.$.Location : sloServices[0].$.Location;
-  } else if (sloServices) {
-    logoutUrl = sloServices.$.Location;
-  }
-    
   const {SAML} = require('@node-saml/node-saml');
   const saml = new SAML({
     callbackUrl: 'https://finance.mysrv.local:8445/saml/acs',
@@ -69,7 +59,6 @@ async function config_saml_sp(app){
     idpCert,
     publicCert,
     privateKey,
-    logoutUrl,
     entryPoint,
     acceptedClockSkewMs: 10000,
     wantAssertionsSigned: true,
@@ -106,7 +95,6 @@ async function config_saml_sp(app){
       console.log('Logging out user:', req.session.profile.nameID);
     }
     delete req.session.profile;
-    delete req.session.user;
     res.redirect('/');
   });
 

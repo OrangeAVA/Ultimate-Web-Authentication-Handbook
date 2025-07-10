@@ -30,21 +30,24 @@ app.use(session({secret: "password",
 
 app.use(express.urlencoded({ extended: true }));
 
-const axios = require('axios');
 const xml2js = require('xml2js');
 
 const publicCertBlock = clean_cert_annots(path.join(__dirname, 'certs', 'idp.crt'));
 const privateKey = decrypt_private_key(path.join(__dirname, 'certs', 'idp.key'), 'password');
 
+const {SAML} = require('@node-saml/node-saml');
+
 function config_saml_sp(app){
   const publicCert = publicCertBlock.replace(/-----BEGIN CERTIFICATE-----|-----END CERTIFICATE-----|\r?\n|\s/g, '');
   const idpCert = publicCertBlock;
 
-  const {SAML} = require('@node-saml/node-saml');
   const saml = new SAML({
     callbackUrl: 'https://idp.local:8443/saml/acs', 
+    logoutCallbackUrl: 'https://idp.local:8443/saml/acs',
     entryPoint: 'https://idp.local:8443/idp',
+    logoutUrl: 'https://idp.local:8443/idp/logout',
     issuer: 'https://idp.local:8443/saml',
+    identifierFormat: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
     idpCert,
     publicCert,
     privateKey,
@@ -60,31 +63,67 @@ function config_saml_sp(app){
   });
 
   app.post('/saml/acs', express.urlencoded({ extended: false }), (req, res) => {
-    saml.validatePostResponseAsync(req.body)
-      .then(({ profile, loggedOut }) => {
-        console.log('SAML assertion processed successfully:', profile);
-        req.session.profile = profile;
-        if (loggedOut) {
-          console.log('User logged out via SAML');
-          req.session?.destroy();
-        }
-        return res.redirect('/');
-      })
-      .catch(err => {
-        console.error('Error processing SAML assertion:', err);
-        res.status(500).send('Internal Server Error');
-      });
+    if (req.body?.SAMLResponse) {
+      saml.validatePostResponseAsync(req.body)
+        .then(({ profile, loggedOut }) => {
+          console.log('SAML assertion processed successfully:', profile);
+          if (loggedOut) {
+            if (req.session?.profile) {
+              console.log('Removing user session:', req.session.profile.nameID);
+              delete req.session.profile;
+            }
+          } else {
+            req.session.profile = profile;
+            req.session.save();
+            console.log('User session created:', profile.nameID);
+          }
+          return res.redirect('/');
+        })
+        .catch(err => {
+          console.error('Error processing SAML assertion:', err);
+          res.status(500).send('Internal Server Error');
+        });
+    } else if (req.body?.SAMLRequest) {
+      saml.validatePostRequestAsync(req.body)
+        .then(({ profile, loggedOut }) => {
+          if (!loggedOut) throw new Error('Unexpected SAML request without logout');
+          if (req.session?.profile) {
+            console.log('Removing user session:', req.session.profile.nameID);
+            delete req.session.profile;
+          }
+          console.log("Profile data:", profile);
+          console.log("RelayState:", req.body.RelayState);
+          return saml.getLogoutResponseUrlAsync(profile, req.body.RelayState, {}, true);
+        })
+        .then(logoutUrl => {
+          console.log('Redirecting to SAML logout URL:', logoutUrl);
+          res.redirect(logoutUrl);
+        })
+        .catch(err => {
+          console.error('Error processing SAML request:', err);
+          res.status(500).send('Internal Server Error');
+        });
+    } else {
+      console.error('Invalid SAML request: neither SAMLResponse nor SAMLRequest found');
+      res.status(400).send('Bad Request: Missing SAMLResponse or SAMLRequest');
+    }
   });
 
   app.get('/auth/logout', (req, res) => {
     if (!req.session?.profile) {
       console.log('No user session to log out');
-    } else {
-      console.log('Logging out user:', req.session.profile.nameID);
+      return res.redirect('/');
     }
-    delete req.session.profile;
-    delete req.session.user;
-    res.redirect('/');
+    console.log('Logging out user:', req.session.profile.nameID);
+    saml.getLogoutUrlAsync(req.session.profile, req.query.RelayState || '/')
+      .then(logoutUrl => {
+        console.log('Redirecting to SAML logout URL:', logoutUrl);
+        res.redirect(logoutUrl);
+      })
+      .catch(err => {
+        console.error('Error generating SAML logout URL:', err);
+        res.status(500).send('Internal Server Error');
+      });
   });
 
   app.get('/auth/login', (req, res) => {
@@ -115,16 +154,13 @@ function config_saml_sp(app){
   }
 
   app.get('/auth/user', hasLoggedIn, (req, res) => {
-    if (!req.session?.profile) {
-      return res.status(401).send('Unauthorized');
-    }
     console.log('Returning user information:', req.session.profile);
     const user = req.session.profile[nsdisplayName];
     res.json({user});
   });
 
   // Utility endpoint to view all active sessions (for admin/debug)
-  app.get('/admin/active-sessions', hasLoggedIn, (req, res) => {
+  app.get('/admin/active-sessions', hasLoggedIn, (req, res) => {    
     res.json(Array.from(activeSessions.entries()).map(([sid, info]) => ({
       sessionId: sid,
       ...info
@@ -144,17 +180,24 @@ function config_saml_sp(app){
     return res.status(401).erorr('Unauthorized');
   });
 
-  app.post('/admin/services', (_, res) => {
+  app.post('/admin/services', (req, res) => {
     (async () => {
       for (const service of services) {
         try {
-          const { data } = await axios.get(service.metadataURL, { timeout: 5000 });
-          const parsed = await xml2js.parseStringPromise(data, { explicitArray: false });
-          console.log(`Parsed metadata for ${service.code}:`, parsed);
+          const resp = await fetch(service.metadataURL, { timeout: 5000 });
+          if (!resp.ok) {
+            throw new Error(`Failed to fetch metadata: ${resp.status} ${resp.statusText}`);
+          }
+          const data = await resp.text();
+          const parsed = await xml2js.parseStringPromise(data, { explicitArray: false});
+          console.log(`Parsed metadata for ${service.code}`);
           service.metadata = parsed;
           service.error = null;
+          console.log('Logged in services:', req.session.services);
+          service.loggedIn = !!req.session.profile && !! req.session.services?.includes(service.entityID);
+          service.hasLogout = !!service.metadata.EntityDescriptor?.SPSSODescriptor?.SingleLogoutService;
         } catch (err) {
-          console.error(`Error fetching metadata for ${service.code}:`, err);
+          console.error(`Error fetching metadata for ${service.code}`);
           service.error = err.message || 'Unknown error';
         }
       }
@@ -221,6 +264,7 @@ function config_saml_sp(app){
       key: privateKey,
       audience: service.entityID,
       nameID: req.session.user.id,
+      sessionIndex: req.session.sessionIndex,
       attributes: {
         [nsdisplayName]: req.session.user.displayName,
         [nsGroups]: req.session.user.groups || []
@@ -229,7 +273,9 @@ function config_saml_sp(app){
       signAssertion: true,
     }
     const user = req.session.user;
-
+    if (service.hasLogout && !req.session.services.includes(service.entityID)) {
+      req.session.services.push(service.entityID);
+    }
     postIDPInitiatedSAMLResponse(opts, user, acsUrl, res);
   });
 }
@@ -244,7 +290,8 @@ const services = [
     displayName: 'HR Application',
     description: 'Human Resources Management System',
     metadata : {},
-    error: null
+    error: null,
+    hasLogout: false
   },
   {
     code: 'finance',
@@ -253,7 +300,8 @@ const services = [
     displayName: 'Finance Application',
     description: 'Finance Management System',
     metadata : {},
-    error: null
+    error: null,
+    hasLogout: false
   },
   {
     code: 'idpportal',
@@ -262,7 +310,8 @@ const services = [
     displayName: 'Identity Provider Portal',
     description: 'Identity Provider for SAML authentication',
     metadata : {},
-    error: null
+    error: null,
+    hasLogout: false
   }
 ];
 
@@ -361,6 +410,7 @@ function render_login_page(req, res, failed= false) {
   return res.send(loginHtml);
 }
 
+const crypto = require('node:crypto');
 function authenticate(req, res, next) {
   if (req.session?.user) {
     console.log(`${req.session.user.id} already authenticated:`);
@@ -376,57 +426,51 @@ function authenticate(req, res, next) {
     return render_login_page(req, res, true);
   }
   req.session.user = users[username];
+  req.session.sessionIndex = crypto.randomUUID();
+  if (!req.session.services) {
+    req.session.services = [];
+  }
   return next();
 }
 
 const samlp = require('samlp');
 
-app.all('/idp', authenticate, samlp.auth({
-  issuer:     'https://idp.local:8443/idp',
-  cert:       publicCertBlock,
-  key:        privateKey,
-  getPostURL: (audience, samldom, req, callback) => {
-    const acsUrl = samldom && samldom.documentElement && samldom.documentElement.getAttribute('AssertionConsumerServiceURL');
-    if (acsUrl) {
-      return callback(null, acsUrl);
-    }
+app.all('/idp', authenticate, (req, res, next) => {
+  const getPostURL = (audience, samldom, req, callback) => {
     const service = Object.values(services).find(s => s.entityID === audience);
     if (!service) {
       console.warn('Audience not found in trusted services:', audience);
       return callback(new Error('Untrusted Service Provider'), null);
     }
-    const postUrl = service.metadata && service.metadata.EntityDescriptor && service.metadata.EntityDescriptor.SPSSODescriptor
-      ? (service.metadata.EntityDescriptor.SPSSODescriptor.AssertionConsumerService &&
-          service.metadata.EntityDescriptor.SPSSODescriptor.AssertionConsumerService[0] &&
-          service.metadata.EntityDescriptor.SPSSODescriptor.AssertionConsumerService[0].$.Location)
-        || service.metadata.EntityDescriptor.SPSSODescriptor.AssertionConsumerService.$.Location
-      : null;
+    if (service.hasLogout && !req.session.services.includes(audience)) {
+      req.session.services.push(audience);
+    }
+    const acsUrl = samldom && samldom.documentElement && samldom.documentElement.getAttribute('AssertionConsumerServiceURL');
+    if (acsUrl) {
+      return callback(null, acsUrl);
+    }
+
+    const postUrl = service.metadata.EntityDescriptor.SPSSODescriptor.AssertionConsumerService.$.Location;
     if (postUrl) {
       return callback(null, postUrl);
     } else {
       // fallback: try to guess from entityID
       return callback(null, service.entityID.replace('/saml', '/saml/acs'));
     }
-  },
-  getUserFromRequest: (req) => {
-    return req.session?.user
-  },
-  /*
-  getCredentials: (issuer, _sessionIndices, _nameId, callback) =>{
-    // Find the service whose entityID matches the issuer
-    const service = Object.values(services).find(s => s.entityID === issuer);
-    if (service && service.metadata && service.metadata.EntityDescriptor.KeyDescriptor) {
-      kdesc = service.metadata.EntityDescriptor.KeyDescriptor;
-      cert = kdesc["ds:KeyInfo"]["ds:X509Data"]["ds:X509Certificate"]
-      return callback(null, {cert});
-    } else {
-      // If not found, return an error
-      return callback(new Error('No matching service or certificate for issuer: ' + issuer));
-    }
-  },*/
-  signResponse: false,
-  signAssertion: true,
-}));
+  };
+  const getUserFromRequest = (req) => {return req.session?.user};
+
+  samlp.auth({
+    issuer:     'https://idp.local:8443/idp',
+    cert:       publicCertBlock,
+    key:        privateKey,
+    sessionIndex: req.session.sessionIndex,
+    getPostURL,
+    getUserFromRequest,
+    signResponse: false,
+    signAssertion: true
+  })(req, res, next);
+});
 
 app.get('/idp/metadata', samlp.metadata({
   issuer:   'https://idp.local:8443/idp',
@@ -437,6 +481,98 @@ app.get('/idp/metadata', samlp.metadata({
   },
   cert:     publicCertBlock
 }));
+
+const getSessionParticipants = function () {
+  const libpath = require.resolve('samlp');
+  const libdir = path.dirname(libpath);
+  const SessionParticipants = require(path.join(libdir, 'sessionParticipants'));
+  return function (spdata) {
+    return new SessionParticipants(spdata);
+  };
+}();
+
+app.get('/idp/logout', (req, res, next) => {
+  if (!req.session?.user || !req.session.services || req.session.services.length === 0) {
+    console.log('No user session to log out');
+    return res.redirect('/');
+  }
+
+  console.log('Logging out user:', req.session.user.id);
+  const nameId = req.session.user.id;
+  const code = req.query?.service || req.body?.service;
+  const entityID = code ? (services.find(s => s.code === code)?.entityID) : null;
+  const svss = entityID ? [entityID] : req.session.services;
+
+  req.session.sessionParticipantsData = req.session.sessionParticipantsData || svss.map(serviceProviderId => {
+    const service = services.find(s => s.entityID === serviceProviderId)
+    const spDesc = service.metadata.EntityDescriptor.SPSSODescriptor;
+    if (!spDesc.SingleLogoutService || !spDesc.SingleLogoutService.$ || !spDesc.SingleLogoutService.$.Location) {
+      // Skip services without SingleLogoutService
+      return null;
+    }
+    const serviceProviderLogoutURL = spDesc.SingleLogoutService.$.Location;
+    const binding = spDesc.SingleLogoutService.$.Binding;
+    const nameIdFormat = spDesc.NameIDFormat;
+    const cert = spDesc?.KeyDescriptor["ds:KeyInfo"]["ds:X509Data"]["ds:X509Certificate"];
+  
+    return {
+      serviceProviderId,
+      sessionIndex: req.session.sessionIndex,
+      nameId,
+      nameIdFormat,
+      serviceProviderLogoutURL,
+      binding,
+      cert
+    };
+  }).filter(n => n);
+
+  if (!req.session.sessionParticipantsDataBkp) {
+    req.session.sessionParticipantsDataBkp = structuredClone(req.session.sessionParticipantsData);
+  }
+
+  const options = {
+    deflate: true,
+    issuer: 'https://idp.local:8443/idp',
+    cert: publicCertBlock,
+    key: privateKey,
+    sessionIndex: req.session.sessionIndex,
+    nameId,
+    sessionParticipants: getSessionParticipants(req.session.sessionParticipantsData),
+    clearIdPSession: function (cb){
+      // Remove the services in sessionParticipantsDataBkp from req.session.services
+      if (req.session.sessionParticipantsDataBkp && Array.isArray(req.session.sessionParticipantsDataBkp)) {
+        const toRemove = req.session.sessionParticipantsDataBkp.map(sp => sp.serviceProviderId);
+        req.session.services = req.session.services.filter(sid => !toRemove.includes(sid));
+        delete req.session.sessionParticipantsData;
+        delete req.session.sessionParticipantsDataBkp;
+      }
+      // If there are no more services in the session, clear user session
+      if (!req.session.services || req.session.services.length === 0 ) {
+        console.log('No logged in SPs');
+        delete req.session.user;
+        delete req.session.sessionIndex;
+        delete req.session.services;
+      }
+      return cb();
+    }
+  };
+  req.body = req.body || {};
+  samlp.logout(options)(req, res, function (err) {
+    if (err) {
+      console.error('Error during SAML logout:', err);
+      return res.status(400).send(err.message || 'SAML Logout Error');
+    }
+    req.session.sessionParticipantsData = options.sessionParticipants._participants;
+    next();
+  });
+});
+
+app.use(
+  (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://hr.mysrv.local:8444, https://finance.mysrv.local:8445, https://idp.local:8443');
+    next();
+  }
+);
 
 // Paths to certificate and key
 const certDir = path.join(__dirname, 'certs', 'ssl');
@@ -449,6 +585,7 @@ const options = {
   ])
 };
 
-const https = require('node:https');https.createServer(options, app).listen(8443, 'idp.local', () => {
+const https = require('node:https');
+https.createServer(options, app).listen(8443, 'idp.local', () => {
   console.log('TLS server running at https://idp.local:8443');
 });
