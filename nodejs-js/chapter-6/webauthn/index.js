@@ -1,3 +1,47 @@
+/**
+ * @fileoverview WebAuthn server implementation using Express and fido2-lib.
+ * This file provides endpoints for WebAuthn registration and authentication flows,
+ * serving static frontend assets, and running an HTTPS server.
+ *
+ * Endpoints:
+ * 
+ * @endpoint GET /hello
+ *   @description Simple test endpoint. Returns "Hello, World!".
+ *   @returns {string} "Hello, World!"
+ *
+ * @endpoint POST /webauthn/register/begin
+ *   @description Initiates WebAuthn registration for a user.
+ *   @query {string} username - The username to register.
+ *   @query {string} state - A unique state identifier for the registration session.
+ *   @returns {object} PublicKeyCredentialCreationOptions for the client.
+ *
+ * @endpoint POST /webauthn/register/finish
+ *   @description Completes WebAuthn registration by verifying attestation response.
+ *   @query {string} username - The username being registered.
+ *   @query {string} state - The state identifier for the registration session.
+ *   @body {object} attestation response from client.
+ *   @returns {object} Success or error message.
+ *
+ * @endpoint POST /webauthn/login/begin
+ *   @description Initiates WebAuthn authentication for a user.
+ *   @query {string} username - The username to authenticate.
+ *   @query {string} state - A unique state identifier for the authentication session.
+ *   @returns {object} PublicKeyCredentialRequestOptions for the client.
+ *
+ * @endpoint POST /webauthn/login/finish
+ *   @description Completes WebAuthn authentication by verifying assertion response.
+ *   @query {string} username - The username being authenticated.
+ *   @query {string} state - The state identifier for the authentication session.
+ *   @body {object} assertion response from client.
+ *   @returns {object} Success or error message.
+ *
+ * Static Assets:
+ *   Serves frontend files from 'frontend' directory.
+ *   Serves js-base64 library from 'node_modules/js-base64'.
+ *
+ * HTTPS Server:
+ *   Runs on port 8443 with TLS certificates.
+ */
 const express = require("express");
 const https = require("node:https");
 const app = express();

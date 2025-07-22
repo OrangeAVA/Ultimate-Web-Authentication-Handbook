@@ -1,3 +1,23 @@
+
+/**
+ * @fileoverview Express server implementing basic authentication using PBKDF2 password hashing.
+ * 
+ * This server reads user credentials from a JSON file ('password.json'), and exposes a single endpoint `/basicauth`
+ * that requires HTTP Basic Authentication. Passwords are verified using PBKDF2 with a static salt and configuration.
+ * 
+ * Endpoints:
+ * @endpoint GET /basicauth
+ *   - Requires HTTP Basic Authentication header.
+ *   - Verifies username and password against stored hash in 'password.json'.
+ *   - Responds with 401 Unauthorized if authentication fails, or a success message if authenticated.
+ * 
+ * Usage:
+ *   Start the server and access http://localhost:8080/basicauth with Basic Auth credentials.
+ * 
+ * Note:
+ *   - Passwords are hashed using PBKDF2 with SHA-1, 4096 iterations, and a static salt ('12345678').
+ *   - This implementation is for educational purposes and should not be used in production as-is.
+ */
 const express = require('express');
 const app = express();
 const crypto = require('crypto');

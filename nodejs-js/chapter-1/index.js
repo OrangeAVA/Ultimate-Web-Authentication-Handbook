@@ -1,3 +1,34 @@
+/**
+ * @fileoverview Express server demonstrating basic authentication, cookie-based visit counting, and session management.
+ *
+ * @module index
+ *
+ * @description
+ * This file sets up an Express server with several routes:
+ * - `/hello`: Returns a simple "Hello, World!" message.
+ * - `/count`: Tracks the number of visits using a cookie named 'count'.
+ * - `/session`: Tracks the number of visits per session using a session cookie and an in-memory map.
+ * - `/basicauth`: Implements HTTP Basic Authentication for the user 'jdoe' with password 'password'.
+ *
+ * @endpoint
+ * @function /hello
+ * @description Responds with "Hello, World!".
+ *
+ * @endpoint
+ * @function /count
+ * @description Increments and returns the visit count using a cookie named 'count'.
+ *
+ * @endpoint
+ * @function /session
+ * @description Increments and returns the visit count per session using a session cookie and a server-side map.
+ *
+ * @endpoint
+ * @function /basicauth
+ * @description Implements HTTP Basic Authentication. Only authenticates user 'jdoe' with password 'password'.
+ *
+ * @listens 8080
+ * @description Starts the server on port 8080.
+ */
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();

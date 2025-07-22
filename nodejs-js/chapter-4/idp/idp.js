@@ -1,3 +1,64 @@
+/**
+ * Identity Provider (IdP) server implementation for SAML authentication flows.
+ * 
+ * This file sets up an Express.js server that acts as a SAML IdP, handling authentication,
+ * session management, user login/logout, and SAML protocol endpoints for Service Providers (SPs).
+ * It supports both SP-initiated and IdP-initiated SAML flows, user management, and admin utilities.
+ * 
+ * Main Features:
+ * - Loads and manages X.509 certificates for SAML signing/encryption.
+ * - Implements user authentication with bcrypt password hashing.
+ * - Tracks active sessions and user service logins.
+ * - Fetches and parses SP metadata for trusted services.
+ * - Handles SAML authentication and logout requests/responses.
+ * - Provides admin endpoints for session and user management.
+ * - Serves static frontend assets and login page.
+ * - Runs over HTTPS with custom SSL certificates.
+ * 
+ * Exposed Endpoints:
+ * 
+ * GET  /saml/metadata
+ *      - Returns SAML Service Provider metadata in XML format.
+ * 
+ * POST /saml/acs
+ *      - Assertion Consumer Service endpoint for processing SAML responses and requests.
+ * 
+ * GET  /auth/login
+ *      - Initiates SAML login flow; redirects to SAML login URL.
+ * 
+ * GET  /auth/logout
+ *      - Initiates SAML logout flow; redirects to SAML logout URL.
+ * 
+ * GET  /auth/user
+ *      - Returns information about the currently authenticated user (requires authentication).
+ * 
+ * GET  /admin/active-sessions
+ *      - Lists all active user sessions (requires authentication).
+ * 
+ * GET  /admin/users
+ *      - Returns user information; admin users see all users, others see only their own (requires authentication).
+ * 
+ * POST /admin/services
+ *      - Fetches and parses metadata for all configured services; returns available services.
+ * 
+ * GET  /admin/shortcuts/:code
+ *      - Performs IdP-initiated SAML login for a given service code (requires authentication).
+ * 
+ * ALL  /idp
+ *      - SAML IdP endpoint for authentication requests; supports both GET and POST.
+ * 
+ * GET  /idp/metadata
+ *      - Returns IdP metadata in XML format.
+ * 
+ * GET  /idp/logout
+ *      - Initiates SAML Single Logout for the user across all logged-in services.
+ * 
+ * Other:
+ * - Serves static files from /frontend.
+ * - Handles login page rendering and authentication.
+ * - Manages CORS headers for trusted SPs.
+ * - Runs HTTPS server on port 8443.
+ */
 const fs = require('node:fs');
 const path = require('node:path');
 const nsdisplayName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';

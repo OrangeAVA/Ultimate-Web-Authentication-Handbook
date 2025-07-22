@@ -1,3 +1,38 @@
+/**
+ * @file authcode.js
+ * @description
+ * This file implements GitHub OAuth 2.0 Authorization Code flow using Express.js.
+ * It provides endpoints for login, logout, callback handling, and fetching user resources.
+ * The server runs over HTTPS and uses cookies to store access tokens securely.
+ *
+ * @endpoint
+ * GET /hello
+ *   - Returns a simple "Hello, World!" message.
+ *
+ * GET /oauth/login
+ *   - Initiates the OAuth 2.0 login flow with GitHub.
+ *   - Redirects the user to GitHub's authorization endpoint.
+ *
+ * GET /oauth/logout
+ *   - Logs out the user by clearing the authentication token cookie.
+ *   - Redirects to the home page.
+ *
+ * GET /oauth/callback
+ *   - Handles the OAuth 2.0 callback from GitHub.
+ *   - Exchanges the authorization code for an access token.
+ *   - Stores the access token in a secure, HTTP-only cookie.
+ *   - Redirects to the home page.
+ *
+ * GET /resource
+ *   - Fetches the authenticated user's profile information from GitHub.
+ *   - Requires a valid access token in the cookie.
+ *   - Returns user information as JSON.
+ *
+ * @note
+ * - Uses HTTPS with custom certificates.
+ * - Requires environment variables GH_CLIENT_ID and GH_CLIENT_SECRET for GitHub OAuth.
+ * - Uses the openid-client library for OAuth operations.
+ */
 const express = require("express");
 const https = require("node:https");
 const app = express();
@@ -13,8 +48,6 @@ app.get('/hello', (req, res) => {
 
   const cid = process.env.GH_CLIENT_ID;
   const csecret = process.env.GH_CLIENT_SECRET;
-
-  console.log(cid, " ", csecret);
 
   const config = new oclient.Configuration({
     issuer: "https://github.com",

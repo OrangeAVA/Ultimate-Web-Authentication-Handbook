@@ -1,3 +1,35 @@
+/**
+ * Google OAuth 2.0 Authentication Server
+ * 
+ * Endpoints:
+ * 
+ * GET /oauth/login
+ *   - Initiates OAuth login with Google.
+ *   - Redirects user to Google's authorization page.
+ * 
+ * GET /oauth/callback
+ *   - Handles the OAuth callback from Google.
+ *   - Exchanges authorization code for tokens.
+ *   - Stores tokens in session.
+ * 
+ * GET /oauth/logout
+ *   - Logs out the user by destroying the session.
+ *   - Redirects to home page.
+ * 
+ * GET /userinfo
+ *   - Returns user information fetched from Google using the access token.
+ *   - Requires user to be authenticated.
+ * 
+ * GET /idtoken
+ *   - Returns decoded ID token (JWT) from session.
+ *   - Requires user to be authenticated.
+ * 
+ * Static files served from /frontend.
+ * 
+ * Requires environment variables:
+ *   - GOOGLE_CLIENT_ID
+ *   - GOOGLE_CLIENT_SECRET
+ */
 const express = require("express");
 const http = require("http");
 const app = express();

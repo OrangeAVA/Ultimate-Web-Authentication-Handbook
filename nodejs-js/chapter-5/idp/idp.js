@@ -1,3 +1,22 @@
+/**
+ * @file idp.js
+ * @description
+ * This file sets up an OpenID Connect (OIDC) Identity Provider (IDP) using the `oidc-provider` library,
+ * served over HTTPS with Express. It configures OIDC clients, token lifetimes, and custom refresh token logic.
+ * The server uses TLS certificates for secure communication.
+ *
+ * @endpoint
+ *   - /oidc
+ *     - Mounts the OIDC provider callback, handling all OIDC protocol endpoints (e.g., /authorize, /token, /userinfo).
+ *
+ * @usage
+ *   - Start the HTTPS server on port 8443.
+ *   - Serves OIDC authentication and token endpoints at https://idp.local:8443/oidc.
+ *
+ * @see
+ *   - https://github.com/panva/node-oidc-provider
+ *   - OIDC specification: https://openid.net/specs/openid-connect-core-1_0.html
+ */
 // Import required modules
 const express = require("express");
 const https = require("node:https");

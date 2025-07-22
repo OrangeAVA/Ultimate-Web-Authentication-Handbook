@@ -1,3 +1,37 @@
+/**
+ * @fileoverview
+ * This file implements a simple HTTPS server using Express for OTP (One-Time Password) authentication.
+ * It supports both TOTP (Time-based OTP) and HOTP (Counter-based OTP) mechanisms using the otplib library.
+ * The server provides endpoints for user registration (generating OTP secrets and QR codes) and OTP validation.
+ * Static files are served for the frontend and otplib browser preset.
+ * 
+ * @module otp-server
+ * 
+ * @endpoint GET /register/:user/:type
+ *   Registers a new user for OTP authentication.
+ *   @param {string} user - The username to register.
+ *   @param {string} type - The OTP type ("totp" or "hotp").
+ *   @returns {Object} JSON containing the secret, type, (counter for HOTP), and QR code file path.
+ * 
+ * @endpoint GET /validate/:user/:otp
+ *   Validates an OTP token for a registered user.
+ *   @param {string} user - The username to validate.
+ *   @param {string} otp - The OTP token to verify.
+ *   @returns {string} Success or failure message with appropriate HTTP status code.
+ * 
+ * @endpoint GET /hello
+ *   Simple test endpoint.
+ *   @returns {string} "Hello, World!"
+ * 
+ * @static /frontend
+ *   Serves static frontend files.
+ * 
+ * @static /@otplib/preset-browser
+ *   Serves static files for otplib browser preset.
+ * 
+ * @security
+ *   The server uses HTTPS with TLS certificates for secure communication.
+ */
 const express = require("express");
 const https = require("node:https");
 const app = express();

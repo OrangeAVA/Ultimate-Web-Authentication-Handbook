@@ -1,3 +1,22 @@
+/**
+ * @fileoverview
+ * This file implements the GitHub OAuth 2.0 Device Authorization Grant workflow using the `openid-client` library.
+ * It interacts with the following GitHub OAuth endpoints:
+ *   - Device Authorization Endpoint: https://github.com/login/device/code
+ *   - Authorization Endpoint: https://github.com/login/oauth/authorize
+ *   - Token Endpoint: https://github.com/login/oauth/access_token
+ *   - Protected Resource Endpoint: https://api.github.com/user
+ *
+ * The workflow allows a user to authenticate via a device code, polls for token issuance,
+ * and fetches the authenticated user's profile from GitHub.
+ *
+ * Environment Variables:
+ *   - GH_CLIENT_ID: The GitHub OAuth application's client ID.
+ *
+ * Main Functions:
+ *   - doDeviceWorkflow: Orchestrates the device authorization flow, handles polling for token,
+ *     and fetches the user's profile upon successful authentication.
+ */
 const oclient = require("openid-client");
 const cid = process.env.GH_CLIENT_ID;
 console.log(cid);

@@ -1,3 +1,25 @@
+/**
+ * @file resource.js
+ * @description
+ * This file sets up an HTTPS Express server that listens on port 8444.
+ * It serves as a resource endpoint for PKCE (Proof Key for Code Exchange) flows,
+ * typically used in OAuth 2.0 authentication scenarios.
+ * 
+ * TLS options are configured using server and intermediate certificates.
+ * 
+ * @endpoint GET /
+ * @description
+ *   Handles GET requests to the root path.
+ *   - If the `code` query parameter is present, responds with an HTML page displaying the code.
+ *   - If the `code` query parameter is missing, responds with a 400 error and an error message.
+ * 
+ * @example
+ *   GET https://localhost:8444/?code=AUTH_CODE
+ *   Response: HTML page showing the code.
+ * 
+ *   GET https://localhost:8444/
+ *   Response: 400 error with "Missing code parameter".
+ */
 const express = require("express");
 const https = require("node:https");
 const app = express();

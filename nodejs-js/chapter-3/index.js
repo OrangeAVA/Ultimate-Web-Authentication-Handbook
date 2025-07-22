@@ -1,3 +1,21 @@
+/**
+ * Express HTTPS server with basic authentication and optional client certificate authentication.
+ *
+ * Endpoints:
+ * 
+ * @endpoint GET /hello
+ * @description Responds with "Hello, World!" for testing server availability.
+ *
+ * @endpoint GET /basicauth
+ * @description Implements HTTP Basic Authentication. Requires 'Authorization' header with credentials.
+ *              - If credentials are missing or invalid, responds with 401 and 'WWW-Authenticate' header.
+ *              - If credentials are valid (user: 'jdoe', pass: 'password'), responds with success message.
+ *
+ * HTTPS Configuration:
+ * - Loads server key and certificate from local files.
+ * - Optionally enforces client certificate authentication if CLIENT_AUTH is true.
+ * - Listens on port 8443.
+ */
 const express = require("express");
 const https = require("node:https");
 const app = express();

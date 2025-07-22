@@ -1,3 +1,58 @@
+/**
+ * @file finance.js
+ * @description
+ * SAML 2.0 Service Provider implementation for a finance web application.
+ * Handles authentication, user session management, and user data access via SAML assertions.
+ * Integrates with an external Identity Provider (IdP) using SAML protocol.
+ * Serves static frontend assets and exposes secure endpoints over HTTPS.
+ *
+ * @module finance
+ *
+ * @see {@link https://github.com/node-saml/node-saml}
+ *
+ * @endpoints
+ * @name GET /saml/metadata
+ * @description Returns the SAML Service Provider metadata XML for IdP configuration.
+ * @returns {application/xml} SAML metadata document.
+ *
+ * @name POST /saml/acs
+ * @description Assertion Consumer Service endpoint. Processes SAML authentication responses from the IdP.
+ * @returns {302} Redirects to home page on success, or 500 on error.
+ *
+ * @name GET /auth/login
+ * @description Initiates SAML authentication flow. Redirects user to IdP login.
+ * @returns {302} Redirects to IdP login URL.
+ *
+ * @name GET /auth/logout
+ * @description Logs out the current user by destroying their session. It does not initiate a SAML logout.
+ * @returns {302} Redirects to home page.
+ *
+ * @name GET /auth/user
+ * @description Returns information about the currently authenticated user.
+ * @returns {application/json} User display name.
+ * @returns {401} If not authenticated.
+ *
+ * @name GET /users
+ * @description Returns user data. Admins see all users; regular users see only their own data.
+ * @returns {application/json} Array of user objects.
+ * @returns {401} If not authenticated or unauthorized.
+ *
+ * @private
+ * @function clean_cert_annots
+ * @description Extracts PEM certificate block from a file.
+ *
+ * @private
+ * @function decrypt_private_key
+ * @description Decrypts a PEM-encoded private key using a passphrase.
+ *
+ * @private
+ * @function read_metadata
+ * @description Fetches and parses SAML IdP metadata from a remote URL.
+ *
+ * @private
+ * @function config_saml_sp
+ * @description Configures SAML Service Provider and registers authentication endpoints on the Express app.
+ */
 const path = require('node:path');
 const fs = require('node:fs');
 const nsdisplayName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';

@@ -1,3 +1,52 @@
+/**
+ * @file hr.js
+ * @description
+ * SAML 2.0 Service Provider implementation for an HR web application using Express.js.
+ * Handles authentication, session management, and user data access via SAML with an external Identity Provider (IdP).
+ * Loads and parses IdP metadata, manages certificates and keys, and exposes endpoints for SAML login, logout, assertion 
+ * consumer, and user data.
+ *
+ * @module hr
+ *
+ * @see {@link https://github.com/node-saml/node-saml} for SAML library used.
+ *
+ * @endpoints
+ * @name GET /saml/metadata
+ * @description Returns the SAML Service Provider metadata XML for IdP configuration.
+ * @returns {application/xml} SAML metadata.
+ *
+ * @name POST /saml/acs
+ * @description Assertion Consumer Service endpoint for processing SAML responses and requests from the IdP.
+ * Handles login and logout SAML flows.
+ * @returns {302} Redirects to home page or SAML logout URL.
+ *
+ * @name GET /auth/login
+ * @description Initiates SAML authentication by redirecting the user to the IdP login page.
+ * @returns {302} Redirects to IdP SAML login URL.
+ *
+ * @name GET /auth/logout
+ * @description Logs out the current user by clearing the session and redirects to home page.
+ * @returns {302} Redirects to home page.
+ *
+ * @name GET /auth/user
+ * @description Returns information about the currently authenticated user.
+ * Requires authentication.
+ * @returns {application/json} User information.
+ * @returns {401} Unauthorized if not authenticated.
+ *
+ * @name GET /users
+ * @description Returns a list of users.
+ * Requires authentication.
+ * - If the user is an admin (has 'hradmin' group), returns all users.
+ * - Otherwise, returns only the current user's data.
+ * @returns {application/json} List of users.
+ * @returns {401} Unauthorized if not authenticated.
+ *
+ * @note
+ * - Uses express-session for session management.
+ * - Serves static frontend files from the 'frontend' directory.
+ * - TLS server runs on https://hr.mysrv.local:8444.
+ */
 const path = require('node:path');
 const fs = require('node:fs');
 const nsdisplayName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';

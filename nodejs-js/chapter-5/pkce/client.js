@@ -1,3 +1,25 @@
+/**
+ * @fileoverview
+ * This file demonstrates a PKCE OAuth2 flow using the `openid-client` library in Node.js.
+ * It interacts with an OpenID Connect (OIDC) Identity Provider (IdP) to authenticate a user,
+ * exchange authorization codes for tokens, decode ID tokens, fetch user info, and periodically
+ * refresh access tokens using the refresh token.
+ *
+ * Relevant Endpoints:
+ * - OIDC Discovery: https://idp.local:8443/oidc
+ * - Authorization Redirect URI: https://mysrv.local:8444/
+ *
+ * Flow:
+ * 1. Discovers OIDC configuration from the IdP.
+ * 2. Generates PKCE code verifier and challenge.
+ * 3. Builds and opens the authorization URL for user login.
+ * 4. Prompts user to enter the authorization code received after login.
+ * 5. Exchanges the authorization code for tokens (access, ID, refresh).
+ * 6. Decodes the ID token and fetches user info from the IdP.
+ * 7. Periodically refreshes the access token using the refresh token.
+ *
+ * @module pkce-client
+ */
 // Import required modules
 const oclient = require("openid-client");
 const openurl = require("openurl");
