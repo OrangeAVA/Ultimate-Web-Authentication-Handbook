@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Enter Username</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; }
+    .container { max-width: 350px; margin: 60px auto; background: #fff; padding: 32px 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    h2 { margin-bottom: 24px; }
+    label { display: block; margin-bottom: 8px; }
+    input[type="text"] { width: 100%; padding: 10px; margin-bottom: 18px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+    .actions { display: flex; justify-content: space-between; }
+    button { padding: 10px 20px; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+    .next-btn { background: #0078d4; color: #fff; }
+    .cancel-btn { background: #eee; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Sign In</h2>
+    <form method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autofocus>
+      <div class="actions">
+        <button type="submit" class="next-btn">Next</button>
+        <button type="button" class="cancel-btn" id="cancelBtn" onclick="abort()">Cancel</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    let uid = '<UID>'; 
+    window.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      form.action = `/interaction/${uid}`;
+    });
+    function abort() {
+      window.location.href = `/interaction/${uid}/abort`;
+    }
+  </script>
+</body>
+</html>

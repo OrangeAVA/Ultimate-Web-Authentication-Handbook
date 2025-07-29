@@ -178,6 +178,28 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "ch6 integrated idp",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "idp"],
+      "cwd": "${workspaceFolder}/chapter-6/integrated"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 integrated mysrv",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "mysrv"],
+      "cwd": "${workspaceFolder}/chapter-6/integrated"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "ch7 Face Match",
       "skipFiles": [
         "<node_internals>/**"

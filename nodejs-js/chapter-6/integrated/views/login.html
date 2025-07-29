@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f9f9f9; }
+    .container { background: #fff; padding: 2em; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+    h1 { font-size: 1.5em; margin-bottom: 1em; }
+    .info { margin-bottom: 1em; }
+    .authenticators { list-style: none; padding: 0; }
+    .authenticators li { background: #e6f7ff; margin-bottom: 0.5em; padding: 0.5em 1em; border-radius: 4px; }
+    .passed { color: #1890ff; font-weight: bold; }
+    .actions { display: flex; justify-content: space-between; }
+    button { padding: 10px 20px; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+    .next-btn { background: #0078d4; color: #fff; }
+    .cancel-btn { background: #eee; color: #333; }    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login Status</h1>
+    <div class="info">
+      <strong>Username:</strong>
+      <span id="username"></span>
+    </div>
+    <div class="info">
+      <strong>Passed Authenticators:</strong>
+      <ul class="authenticators" id="authenticators">
+        <!-- List will be populated by JavaScript -->
+      </ul>
+    </div>
+    <form method="POST">
+      <div class="actions">
+        <button type="submit" class="next-btn">Next</button>
+        <button type="button" class="cancel-btn" id="cancelBtn" onclick="abort()">Cancel</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    // Example data, replace with server-side rendering or fetch as needed    
+    let results = {RESULT}; // This should be replaced with actual data from the server
+    
+    document.getElementById('username').textContent = results.username;
+
+    const authenticatorsList = document.getElementById('authenticators');
+    Object.entries(results).forEach(([key, value]) => {
+      if (key !== 'username' && value === true) {
+        const li = document.createElement('li');
+        li.textContent = key;
+        li.classList.add('passed');
+        authenticatorsList.appendChild(li);
+      }
+    });
+
+    let uid = '<UID>'; 
+    window.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      form.action = `/interaction/${uid}`;
+    });
+    function abort() {
+      window.location.href = `/interaction/${uid}/abort`;
+    }
+  </script>
+</body>
+</html>
