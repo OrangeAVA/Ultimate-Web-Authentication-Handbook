@@ -90,16 +90,14 @@ function register(type, username, data) {
         shadow[username].otp = data.secret;
         return true;
       }
-      return false;
+      break
     case "webauthn":
-      if (!Array.isArray(shadow[username].webauthn)) {
-        shadow[username].webauthn = [];
-      }
-      shadow[username].webauthn.push(data); // e.g., credential object
+      shadow[username].webauthn = data;
       return true;
     default:
       return false;
   }
+  return false;
 }
 
 function hasCredential(type, username) {
@@ -110,9 +108,23 @@ function hasCredential(type, username) {
     case "otp":
       return !!shadow[username].otp;
     case "webauthn":
-      return Array.isArray(shadow[username].webauthn) && shadow[username].webauthn.length > 0;
+      return !!shadow[username].webauthn;
     default:
       return false;
+  }
+}
+
+function getCredential(type, username) {
+  if (!username || !shadow[username]) return null;
+  switch (type) {
+    case "password":
+      return shadow[username].password;
+    case "otp":
+      return shadow[username].otp;
+    case "webauthn":
+      return shadow[username].webauthn || [];
+    default:
+      return null;
   }
 }
 
@@ -149,5 +161,6 @@ module.exports = {
   register,
   validate,
   hasCredential,
+  getCredential,
   generateSecret
 };

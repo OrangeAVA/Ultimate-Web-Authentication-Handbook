@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebAuthn Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { background: #f7f8fa; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Arial, sans-serif; }
+    .main-box { background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 36px 32px 28px 32px; max-width: 400px; width: 100%; text-align: center; }
+    .main-box h1 { margin: 0 0 18px 0; font-size: 1.7em; font-weight: 700; color: #222; letter-spacing: 0.01em; }
+    .main-box p { color: #555; font-size: 1.05em; margin-bottom: 28px; }
+    .btn-row { display: flex; justify-content: center; gap: 16px; margin-bottom: 18px; }
+    .btn { padding: 11px 28px; border: none; border-radius: 5px; font-size: 1em; font-weight: 500; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .btn-approve { background: #1976d2; color: #fff; }
+    .btn-approve:hover { background: #125ea2; }
+    .btn-cancel { background: #e0e0e0; color: #333; }
+    .btn-cancel:hover { background: #d32f2f; color: #fff; }
+    .status-message { min-height: 24px; margin-top: 10px; color: #d32f2f; font-size: 0.98em; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <script src="/js-base64/base64.js"></script>
+  <div class="main-box">
+    <h1>Approve FIDO2 Credential</h1>
+    <p>
+      Please approve the use of your FIDO2 credential (security key or biometric device) to continue.
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-cancel" id="cancel-btn">Cancel</button>
+    </div>
+    <div id="status" class="status-message"></div>
+  </div>
+  <script>
+    const uid = '<UID>';
+    document.getElementById('cancel-btn').onclick = function() {
+      window.location.href = `/interaction/${uid}/abort`;
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('status').textContent = 'Please follow the instructions on your device to complete registration.';
+      await authenticate();
+    });
+
+    async function authenticate() {
+      try {
+        const publicKey = {RESULT};
+        publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
+        const id = publicKey.allowCredentials[0].id;
+        publicKey.allowCredentials[0].id = Base64.toUint8Array(id); 
+
+        console.log("PublicKey:", publicKey);
+
+        const cred = await window.navigator.credentials.get({publicKey});
+        console.log(cred);
+
+        const authenticatorData = Base64.fromUint8Array(new Uint8Array(cred.response.authenticatorData), true);
+        const clientDataJSON = Base64.fromUint8Array(new Uint8Array(cred.response.clientDataJSON), true);
+        const signature = Base64.fromUint8Array(new Uint8Array(cred.response.signature), true);
+
+        const cc = {
+          id: Base64.encodeURI(cred.id),
+          rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
+          response: {authenticatorData, clientDataJSON, signature},
+          type: 'public-key'
+        };
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/interaction/${uid}`;
+        form.style.display = 'none';
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'cc';
+        input.value = JSON.stringify(cc);
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = 'Authentication failed: ' + (err.message || err);
+      }
+    }
+  </script>
+</body>
+</html>

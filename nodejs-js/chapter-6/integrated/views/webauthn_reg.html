@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebAuthn Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f7f8fa; margin: 0; }
+    .auth-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 32px 24px; max-width: 350px; width: 100%; text-align: center; }
+    h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.5em; font-weight: 600; color: #222; }
+    p { margin-bottom: 24px; color: #444; font-size: 1em; }
+    .auth-actions { margin-bottom: 16px; }
+    .btn-cancel { background: #e0e0e0; color: #333; border: none; border-radius: 4px; padding: 10px 24px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+    .btn-cancel:hover { background: #d32f2f; color: #fff; }
+    .auth-status { margin-top: 12px; min-height: 24px; color: #d32f2f; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+  <script src="/js-base64/base64.js"></script>
+  <script>
+  </script>
+  <div class="auth-container">
+    <h2>Register FIDO2 Credential</h2>
+    <p>
+      Please register the use of your FIDO2 credential (security key or biometric device) to continue.
+    </p>
+    <div class="auth-actions">
+      <button type="button" class="btn-cancel" onclick="skip();">Skip</button>
+    </div>
+    <div id="webauthn-status" class="auth-status"></div>
+  </div>
+  <script>
+    const uid = '<UID>';
+    function skip() {
+      window.location.href = `/interaction/${uid}/skip`;
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('webauthn-status').textContent = 'Please follow the instructions on your device to complete registration.';
+      await register();
+    });
+
+    async function register(){
+      const publicKey = {RESULT};
+      publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
+      const textEncoder = new TextEncoder();
+      publicKey.user.id = textEncoder.encode(publicKey.user.id);
+
+
+      let cred = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          cred = await window.navigator.credentials.create({publicKey});
+          if (cred) break;
+        } catch (e) {
+          // Optionally log error or update status
+          console.error(`Registration attempt ${attempt} failed:`, e);
+          document.getElementById('webauthn-status').textContent = `Attempt ${attempt} failed. ${3 - attempt} tries left.`;
+        }
+      }
+
+      cred || skip();
+      const attestationObject = Base64.fromUint8Array(new Uint8Array(cred.response.attestationObject), true);
+      const clientDataJSON = Base64.fromUint8Array(new Uint8Array(cred.response.clientDataJSON), true);
+
+      const cc = {
+        id: Base64.encodeURI(cred.id),
+        rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
+        response: {attestationObject, clientDataJSON},
+        type: 'public-key'
+      };
+
+      // Create a form and auto-submit it with cc as JSON payload
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/interaction/${uid}`;
+      form.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'cc';
+      input.value = JSON.stringify(cc);
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  </script>
+</body>
+</html>

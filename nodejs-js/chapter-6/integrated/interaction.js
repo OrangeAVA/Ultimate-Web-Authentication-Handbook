@@ -23,6 +23,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Prompt, Check, base } = interactionPolicy;
 const {urlencoded} = require("body-parser");
+const { registerBeginWebAuthn, registerFinishWebAuthn, authBeginWebAuthn, authFinishWebAuthn } = require("./webauthn");
 
 /**
  * Sets up the interaction policy for the OIDC provider.
@@ -37,7 +38,7 @@ function setupInteractionPolicy() {
     new Prompt(
       { name: 'username', requestable: true },
       new Check('username', 'missing username', ctx => !ctx.oidc.session?.accountId && !ctx.oidc.result?.username)
-      ), 0
+    ), 0
   );
 
   policy.add(
@@ -63,7 +64,10 @@ function setupInteractionPolicy() {
 
   policy.add(
     new Prompt(
-      { name: 'webauthn', requestable: true }, 
+      { name: 'webauthn', requestable: true }, async ctx => {
+        const pkcc = await authBeginWebAuthn(ctx.oidc.result.username);
+        return pkcc;
+      },
       new Check('invalid_webauthn', 'missing or invalid webauthn', 
         ctx => !ctx.oidc.session?.accountId && !ctx.oidc.result.webauthn && hasCredential('webauthn', ctx.oidc.result?.username)
       )
@@ -83,16 +87,19 @@ function setupInteractionPolicy() {
       )
     ), 5
   );
-/*
+
   policy.add(
     new Prompt(
-      { name: 'webauthn_reg', requestable: true }, 
+      { name: 'webauthn_reg', requestable: true }, async ctx => {
+        const pkcc = await registerBeginWebAuthn(ctx.oidc.session.accountId);
+        return pkcc;
+      },
       new Check('authenticated', 'user is authenticated', 
-        ctx => ctx.oidc.result.login?.accountId && !hasCredential('webauthn', ctx.oidc.result.username)
+        ctx => ctx.oidc.session?.accountId && !ctx.oidc.result?.webauthn_reg?.skipped &&!hasCredential('webauthn', ctx.oidc.session.accountId)
       )
     ), 6
   );
-*/
+
   return policy;
 }
 
@@ -116,6 +123,14 @@ function setupInteractions(provider, app) {
       let data = fs.readFileSync(viewFilePath, 'utf8');
       data = data.replace('<UID>', `${uid}`);
       if (prompt.name === 'otp_reg' || prompt.name === 'webauthn_reg') {
+        await provider.interactionResult(req, res, { 
+          [prompt.name]: prompt.details || {}
+        }, { mergeWithLastSubmission: false });
+        data = data.replace('{RESULT}', JSON.stringify(prompt.details || {}));
+      } else if (prompt.name === 'webauthn') {
+        await provider.interactionResult(req, res, { 
+          [prompt.name]: prompt.details || {}
+        }, { mergeWithLastSubmission: true });
         data = data.replace('{RESULT}', JSON.stringify(prompt.details || {}));
       } else if (prompt.name === 'consent') {
         const client = await provider.Client.find(params.client_id);
@@ -154,7 +169,7 @@ function setupInteractions(provider, app) {
   app.post('/interaction/:uid', urlencoded({ extended: false }), async (req, res) => {
     const { uid } = req.params;
     const interactionDetails = await provider.interactionDetails(req, res);
-    const { prompt, params, session, grantId, lastSubmission } = interactionDetails;
+    const { prompt, params, session, grantId, lastSubmission, result: lresult } = interactionDetails;
     let result; 
     let merge = true;
     switch (prompt.name) {
@@ -188,18 +203,8 @@ function setupInteractions(provider, app) {
         }
         break;
       }
-      case 'webauthn': {
-        const { webauthn } = req.body;
-        if (!webauthn) {
-          return res.status(400).send('WebAuthn token is required');
-        } else {
-          passed = await validate('webauthn', lastSubmission.username, webauthn);
-          result = { webauthn: passed };
-        }
-        break;
-      }
       case 'login': {
-        if (lastSubmission.password) {
+        if (lastSubmission.password === true || (lastSubmission.otp === true && lastSubmission.webauthn === true )) {
           const scopes = params.scope.split(' ');
           result = { 
             login: { 
@@ -221,19 +226,18 @@ function setupInteractions(provider, app) {
         }
         break;
       }
-      case 'webauthn_reg': {
-        //const { webauthn } = req.body;
-        webauthn = true;
-        if (!webauthn) {
-          return res.status(400).send('WebAuthn token is required for registration');
-        } else {
-          const registered = register('webauthn', lastSubmission.username, webauthn);
-          if (registered) {
-            result = { webauthn_reg: true };
-          } else {
-            return res.status(400).send('Failed to register WebAuthn token');
-          }
-        }
+      case 'webauthn_reg' :{
+        const {cc} = req.body;
+        ccdata = JSON.parse(cc);
+        await registerFinishWebAuthn(lresult.webauthn_reg.user.name, lresult.webauthn_reg.challenge, ccdata);
+        result = {};
+        break;
+      }
+      case 'webauthn': {
+        const {cc} = req.body;
+        ccdata = JSON.parse(cc);
+        const passed = await authFinishWebAuthn(lastSubmission.username, lresult.webauthn.challenge, ccdata);
+        result = passed ? { webauthn: true } : {};
         break;
       }
       case 'consent': {

@@ -49,6 +49,8 @@ setupInteractions(oidcProvider, app);
 // Mount OIDC provider callback at /oidc
 app.use("/oidc", oidcProvider.callback());
 
+app.use('/js-base64',express.static('node_modules/js-base64'));
+
 const qrcode = require('qrcode');
 app.get('/qrcode', async (req, res) => {
   const { data } = req.query;
