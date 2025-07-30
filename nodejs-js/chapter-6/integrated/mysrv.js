@@ -1,23 +1,23 @@
 /**
  * @file mysrv.js
  * @description
- * This file sets up an Express HTTPS server with OpenID Connect authentication and session management.
- * 
+ * Express HTTPS server with OpenID Connect authentication and session management.
+ *
  * Features:
- * - Serves static frontend files from the 'frontend' directory.
- * - Uses express-session for session management with a 2-hour cookie expiration.
+ * - Serves static files from the 'frontend' directory.
+ * - Manages user sessions with express-session (2-hour expiration).
  * - Configures HTTPS using server and CA certificates.
- * - Discovers OpenID Connect configuration from a specified identity provider.
+ * - Discovers OpenID Connect configuration from a local identity provider.
  * - Implements OAuth 2.0 login and logout flows using openid-client.
- * - Handles OAuth callback for authorization code grant and session token storage.
- * - Provides a /userinfo endpoint to fetch user information using the access token.
- * 
+ * - Handles OAuth callback for authorization code grant and stores tokens in session.
+ * - Provides a /userinfo endpoint to fetch user information with the access token.
+ *
  * Endpoints:
- * - GET /oauth/login: Initiates OAuth login flow.
- * - GET /oauth/logout: Initiates OAuth logout flow.
- * - GET /oauth/callback: Handles OAuth authorization code callback.
- * - GET /oauth/callback/logout: Handles post-logout callback.
- * - GET /userinfo: Returns authenticated user's information.
+ * - GET /oauth/login: Start OAuth login.
+ * - GET /oauth/logout: Start OAuth logout.
+ * - GET /oauth/callback: Handle OAuth authorization code callback.
+ * - GET /oauth/callback/logout: Handle post-logout callback.
+ * - GET /userinfo: Return authenticated user's info.
  */
 const express = require('express');
 const bodyParser = require('body-parser');

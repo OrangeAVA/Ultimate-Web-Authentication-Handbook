@@ -42,6 +42,20 @@
       await authenticate();
     });
 
+    
+    /*
+      Authenticates a user using WebAuthn credentials.
+
+      This function verifies the user's identity by validating the provided WebAuthn credentials
+      (such as a public key credential) against the registered authenticators for the given user.
+      It ensures that the authentication request is legitimate and that the credentials match
+      those previously registered by the user.
+
+      The publicKey data is prepopulated with the challenge and user ID, and the response is processed
+      to extract the authenticator data, client data, and signature. If the authentication is successful
+      the function submits the credential data to the server for further processing of the signature with
+      the user's public key.
+    */
     async function authenticate() {
       try {
         const publicKey = {RESULT};

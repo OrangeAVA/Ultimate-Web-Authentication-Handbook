@@ -1,16 +1,14 @@
 /**
  * @file idp.js
  * @description
- * This file sets up an OpenID Connect (OIDC) Identity Provider (IDP) using the `oidc-provider` library and Express.js.
- * It configures OIDC clients, custom interaction policies, and account finding logic.
- * The OIDC provider is mounted at `/oidc` and supports secure HTTPS connections using custom TLS certificates.
- * Additionally, it exposes a `/qrcode` endpoint to generate QR codes from provided data.
- *
- * Key Features:
- * - OIDC Provider configuration with custom client and interaction settings.
- * - HTTPS server setup with TLS certificates for secure communication.
- * - QR code generation endpoint for auxiliary authentication flows.
- * - Integration with custom interaction and account logic via imported modules.
+ * Sets up an OpenID Connect (OIDC) Identity Provider using the `oidc-provider` library and Express.js.
+ * 
+ * Features:
+ * - Configures OIDC clients and custom interaction policies.
+ * - Integrates custom interaction and account logic from local modules.
+ * - Serves the OIDC provider at `/oidc` over HTTPS with custom TLS certificates.
+ * - Provides a `/qrcode` endpoint for generating QR codes from query data.
+ * - Serves static assets for JS Base64 encoding.
  */
 const express = require("express");
 const app = express();

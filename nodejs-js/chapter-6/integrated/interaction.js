@@ -2,10 +2,9 @@
  * @file interaction.js
  * @module interaction
  * @description
- * This module defines the interaction policy and interaction routes for an OIDC provider.
- * It handles multi-step authentication flows including username, password, OTP, and WebAuthn,
- * as well as registration for OTP and WebAuthn credentials. The module also manages consent
- * interactions and integrates with user credential validation and registration logic.
+ * Provides interaction policy and Express routes for handling OIDC authentication flows.
+ * Supports multi-factor authentication (username, password, OTP, WebAuthn), credential registration,
+ * and consent management. Integrates with user credential logic and OIDC provider.
  *
  * @requires oidc-provider
  * @requires ./users

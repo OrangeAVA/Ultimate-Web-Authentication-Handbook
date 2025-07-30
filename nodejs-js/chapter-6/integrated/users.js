@@ -1,21 +1,22 @@
 /**
  * @file users.js
  * @description
- * This module provides a simple in-memory user store and credential management for authentication purposes.
- * It supports password, OTP (One-Time Password), and WebAuthn credentials.
- * 
+ * In-memory user and credential management module for authentication demos.
+ *
  * Features:
- * - Defines a set of sample users with basic profile information and group memberships.
- * - Stores hashed passwords and other credentials in a shadow object.
- * - Provides functions to validate credentials, register new credentials, and check credential existence.
- * - Implements a findAccount function for integration with authentication frameworks (e.g., OpenID Connect).
- * - Integrates with the 'bcrypt' library for password hashing and 'otplib' for OTP generation and validation.
- * 
+ * - Defines sample users with profile info and group memberships.
+ * - Stores hashed passwords and credentials in a shadow object.
+ * - Supports password, OTP (TOTP), and WebAuthn credential types.
+ * - Provides functions to validate, register, and check credentials.
+ * - Includes findAccount for integration with authentication frameworks.
+ * - Uses 'bcrypt' for password hashing and 'otplib' for OTP.
+ *
  * Exported functions:
- * - findAccount: Retrieves user account information and claims.
- * - register: Registers OTP or WebAuthn credentials for a user.
+ * - findAccount: Returns user account info and claims.
+ * - register: Registers OTP or WebAuthn credentials.
  * - validate: Validates password, OTP, or WebAuthn credentials.
- * - hasCredential: Checks if a user has a specific type of credential.
+ * - hasCredential: Checks if a user  has a credential type.
+ * - getCredential: Retrieves a user's credential.
  * - generateSecret: Generates a secret for OTP registration.
  */
 const users = {

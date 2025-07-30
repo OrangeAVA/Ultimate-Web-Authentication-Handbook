@@ -39,6 +39,23 @@
       await register();
     });
 
+    /**
+     * Registers a new FIDO2 credential using the WebAuthn API.
+     *
+     * This function initiates the process of creating a new public key credential
+     * for the user, which can be used for passwordless authentication or as a
+     * second factor. It interacts with the browser's WebAuthn API to prompt the
+     * user to use a security key, biometric device, or built-in authenticator.
+     *
+     * The function will attempt to create a new credential up to 3 times in case
+     * of errors (such as user cancellation or device issues). After a successful
+     * registration, the resulting credential is typically sent to the server for
+     * validation and storage.
+     *
+     * Returns:
+     *   A Promise that resolves when registration is successful, or rejects after
+     *   3 failed attempts.
+     */
     async function register(){
       const publicKey = {RESULT};
       publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
