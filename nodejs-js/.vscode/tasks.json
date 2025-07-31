@@ -2,14 +2,81 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "wait-for-ch5-idp-and-resource",
+      "label": "wait-for-ch4-idp",
       "type": "shell",
+      "windows": {
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "$ErrorActionPreference = \\\"SilentlyContinue\\\"; $timeout = [DateTime]::Now.AddSeconds(10); while ((-not (Test-NetConnection -ComputerName localhost -Port 8443).TcpTestSucceeded) -and ([DateTime]::Now -lt $timeout)) { Start-Sleep -Seconds 1 }; if (-not (Test-NetConnection -ComputerName localhost -Port 8443).TcpTestSucceeded) { exit 0 }"
+      ]
+      },
+      "linux": {
       "command": "sh",
       "args": [
         "-c",
-        // Wait for both IDP and Resource server to be available on their respective ports
-        "until nc -z localhost 8443 && nc -z localhost 8444; do sleep 1; done"
-      ],
+        "for i in {1..10}; do nc -z localhost 8443 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
+      "osx": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "for i in {1..10}; do nc -z localhost 8443 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "wait-for-ch5-idp-and-resource",
+      "type": "shell",
+      "windows": {
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "$ErrorActionPreference = \\\"SilentlyContinue\\\"; $timeout = [DateTime]::Now.AddSeconds(20); $idpReady = $false; $resourceReady = $false; while ((-not $idpReady -or -not $resourceReady) -and ([DateTime]::Now -lt $timeout)) { if (-not $idpReady) { $idpReady = (Test-NetConnection -ComputerName localhost -Port 8443).TcpTestSucceeded } if (-not $resourceReady) { $resourceReady = (Test-NetConnection -ComputerName localhost -Port 8444).TcpTestSucceeded } if (-not $idpReady -or -not $resourceReady) { Start-Sleep -Seconds 1 } }; if (-not $idpReady -or -not $resourceReady) { exit 0 }"
+      ]
+      },
+      "linux": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "for i in {1..10}; do nc -z localhost 8443 && nc -z localhost 8444 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
+      "osx": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "for i in {1..10}; do nc -z localhost 8443 && nc -z localhost 8444 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "wait-for-ch6-integrated-idp",
+      "type": "shell",
+      "windows": {
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "$ErrorActionPreference = \\\"SilentlyContinue\\\"; $timeout = [DateTime]::Now.AddSeconds(10); while ((-not (Test-NetConnection -ComputerName localhost -Port 8443).TcpTestSucceeded) -and ([DateTime]::Now -lt $timeout)) { Start-Sleep -Seconds 1 }; if (-not (Test-NetConnection -ComputerName localhost -Port 8443).TcpTestSucceeded) { exit 0 }"
+      ]
+      },
+      "linux": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "for i in {1..10}; do nc -z localhost 8443 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
+      "osx": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "for i in {1..10}; do nc -z localhost 8443 && exit 0; sleep 1; done; exit 0"
+      ]
+      },
       "problemMatcher": []
     }
   ]

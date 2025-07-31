@@ -1,2 +1,3 @@
 *.exe
 **/out/*
+go-flutter/appendix-c/output/debug.log

@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "ch1",
       "skipFiles": [
-        "<node_internals>/**"
+      "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/chapter-1/index.js",
       "cwd": "${workspaceFolder}/chapter-1"
@@ -62,7 +62,8 @@
       "env":{
         "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
       },
-      "cwd": "${workspaceFolder}/chapter-4/finance"
+      "cwd": "${workspaceFolder}/chapter-4/finance",
+      "preLaunchTask": "wait-for-ch4-idp"
     },
     {
       "type": "node",
@@ -77,7 +78,8 @@
       "env":{
         "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
       },
-      "cwd": "${workspaceFolder}/chapter-4/hr"
+      "cwd": "${workspaceFolder}/chapter-4/hr",
+      "preLaunchTask": "wait-for-ch4-idp"
     },
     {
       "type": "node",
@@ -195,28 +197,50 @@
       ],
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "mysrv"],
-      "cwd": "${workspaceFolder}/chapter-6/integrated"
+      "cwd": "${workspaceFolder}/chapter-6/integrated",
+      "preLaunchTask": "wait-for-ch6-integrated-idp"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "ch7 Face Match",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "name": "ch7 face match",
       "program": "${workspaceFolder}/chapter-7/face.js",
-      "cwd": "${workspaceFolder}/chapter-7/"
-    }                  
+      "cwd": "${workspaceFolder}/chapter-7",
+      "windows": {
+        "runtimeExecutable": "wsl",
+        "runtimeArgs": ["npm"]
+      },
+      "linux": {
+        "runtimeExecutable": "node"
+      },
+      "osx": {
+        "runtimeExecutable": "node"
+      }
+    }
   ],
   "compounds": [
     {
+      "name": "ch4",
+      "configurations": [
+        "ch4 idp",
+        "ch4 finance",
+        "ch4 hr"
+      ]
+    },
+    {
       "name": "ch5 pkce",
-
       "configurations": [
         "ch5 idp",
         "ch5 pkce resource server",
         "ch5 pkce client"
       ],
     },
+    {
+      "name": "ch6 integrated",
+      "configurations": [
+        "ch6 integrated idp",
+        "ch6 integrated mysrv"
+      ]
+    }
   ]
 }

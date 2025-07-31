@@ -228,7 +228,7 @@ var tlsopts = {
   passphrase: "password",
   cert: Buffer.concat([
     fs.readFileSync(p.join(scertpath, "mysrv.local.crt")),
-    fs.readFileSync(p.join(scertpath, "sint.crt"))
+    fs.readFileSync(p.join(scertpath, "scas.crt"))
   ])
 };
 

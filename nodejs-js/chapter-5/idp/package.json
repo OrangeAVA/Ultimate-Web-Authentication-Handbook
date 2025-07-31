@@ -4,6 +4,6 @@
     "oidc-provider": "^9.1.1"
   },
   "scripts": {
-    "start": "DEBUG=oidc-provider:* node idp.js"
+    "start": "node idp.js"
   }
 }
