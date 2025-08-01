@@ -69,11 +69,11 @@ func setupTLSServer(srvName string) *http.Server {
 
 func addOAuthHandlers() {
 	client_id, ok := os.LookupEnv("GH_CLIENT_ID")
-	if !ok {
+	if !ok || len(client_id) == 0 {
 		log.Panicf("Environment Variable GH_CLIENT_ID not found")
 	}
 	client_secret, ok := os.LookupEnv("GH_CLIENT_SECRET")
-	if !ok {
+	if !ok || len(client_secret) == 0 {
 		log.Panicf("Environment Variable GH_CLIENT_SECRET not found")
 	}
 	conf := &oauth2.Config{

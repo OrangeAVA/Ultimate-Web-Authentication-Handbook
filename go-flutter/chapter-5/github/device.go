@@ -153,7 +153,7 @@ func print_user_info(access_token string) (err error) {
 
 func main() {
 	client_id, ok := os.LookupEnv("GH_CLIENT_ID")
-	if !ok {
+	if !ok || client_id == "" {
 		log.Panicf("Environment Variable GH_CLIENT_ID not found")
 	}
 	var (

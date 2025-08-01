@@ -10,7 +10,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-1/main.go"          
+      "program": "${workspaceFolder}/chapter-1/main.go"          
     },
     {
       "name": "ch2 server",
@@ -18,7 +18,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-2/server.go"          
+      "program": "${workspaceFolder}/chapter-2/server.go"          
     },
     {
       "name": "ch3 main",
@@ -26,7 +26,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-3/main.go"          
+      "program": "${workspaceFolder}/chapter-3/main.go"          
     },
     {
       "name": "ch4 idp",
@@ -34,7 +34,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-4/idp/idp.go",
+      "program": "${workspaceFolder}/chapter-4/idp/idp.go",
       "preLaunchTask": "ch4 idp frontend"
     },
     {
@@ -43,7 +43,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-4/finance/finance.go",
+      "program": "${workspaceFolder}/chapter-4/finance/finance.go",
       "preLaunchTask": "ch4 finance delay frontend"
     },
     {
@@ -52,7 +52,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-4/hr/hr.go",
+      "program": "${workspaceFolder}/chapter-4/hr/hr.go",
       "preLaunchTask": "ch4 hr delay frontend"
     },
     {
@@ -61,7 +61,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-5/github/authcode.go",
+      "program": "${workspaceFolder}/chapter-5/github/authcode.go",
       "preLaunchTask": "ch5 github frontend",
       "env": {
         "GH_CLIENT_ID": "",
@@ -74,7 +74,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-5/github/device.go",
+      "program": "${workspaceFolder}/chapter-5/github/device.go",
       "env": {
         "GH_CLIENT_ID": ""
       }
@@ -85,7 +85,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-5/idp/idp.go"
+      "program": "${workspaceFolder}/chapter-5/idp/idp.go"
     },
     {
       "name": "ch5 pkce resource",
@@ -93,7 +93,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-5/pkce/resource/server.go"
+      "program": "${workspaceFolder}/chapter-5/pkce/resource/server.go"
     },
     {
       "name": "ch5 pkce client",
@@ -107,7 +107,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-5/google/oidc.go",
+      "program": "${workspaceFolder}/chapter-5/google/oidc.go",
       "preLaunchTask": "ch5 google frontend",
       "env": {
         "GOOGLE_CLIENT_ID": "",
@@ -120,7 +120,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-6/otp/otp.go",
+      "program": "${workspaceFolder}/chapter-6/otp/otp.go",
       "preLaunchTask": "ch6 otp frontend"
     },
     {
@@ -129,7 +129,7 @@
       "request": "launch",
       "type": "go",
       "mode": "debug",
-      "program": "chapter-6/webauthn/webauthn.go",
+      "program": "${workspaceFolder}/chapter-6/webauthn/webauthn.go",
       "preLaunchTask": "ch6 webauthn frontend"
     },
   ],

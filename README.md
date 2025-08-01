@@ -1,9 +1,8 @@
-## This is WIP. 
-
+*This repository utilizes symlinks on all platforms. Please use the following command on GitHub before cloning this repository. 
+`git config --global core.symlinks true`
+On Windows 10 and later, support symlinks. Follow this article to understand more about them and activate them. https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/. On all Unix-like environments like Linux and MacOS they are supported by default.*
 
 ## Ultimate Web Authentication Handbook
-
-
 This is the repository for [Ultimate Web Authentication Handbook
 ](https://orangeava.com/products/ultimate-web-authentication-handbook), published by Orange AVA™
 
@@ -46,15 +45,16 @@ in their respective folders.
 ### Launch Scripts
 
 Launch scripts (`.vscode/launch.json`)are available for all the code samples 
-from Chapter-1 to 5. 
+from Chapter-1 to 6. 
 
 In Chapter-5, GitHub examples populate the environment variables
  `GH_CLIENT_ID` and `GH_CLIENT_SECRET`.
 Similarly, for Google OIDC demo, populate the `GOOGLE_CLIENT_ID` and 
-`GOOGLE_CLIENT_SECRET`.
+`GOOGLE_CLIENT_SECRET`. You will need to provide them in the `launch.json`, if 
+you are using the `VS Code Launchers`.
 
 Due to additional configurations, launch scripts are unavailable for 
-integrated sample in Chapter-6 and face match demo in Chapter-7.
+face match demo in Chapter-7.
 
 ## Security Implications
 
