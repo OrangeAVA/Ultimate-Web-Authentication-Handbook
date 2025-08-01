@@ -1,6 +1,8 @@
-*This repository utilizes symlinks on all platforms. Please use the following command on GitHub before cloning this repository. 
+*This repository utilizes symlinks on all platforms. Please use the following command on GitHub before cloning this repository.*
+
 `git config --global core.symlinks true`
-On Windows 10 and later, support symlinks. Follow this article to understand more about them and activate them. https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/. On all Unix-like environments like Linux and MacOS they are supported by default.*
+
+*On Windows 10 and later, support symlinks. Follow [this article](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/) to understand more about them and activate them. On all Unix-like environments like Linux and MacOS they are supported by default.*
 
 ## Ultimate Web Authentication Handbook
 This is the repository for [Ultimate Web Authentication Handbook
