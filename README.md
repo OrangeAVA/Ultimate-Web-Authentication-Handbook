@@ -6,7 +6,6 @@ On Windows 10 and later, support symlinks. Follow this article to understand mor
 This is the repository for [Ultimate Web Authentication Handbook
 ](https://orangeava.com/products/ultimate-web-authentication-handbook), published by Orange AVA™
 
-
 ## About the Book
 In today's digital landscape, web apps evolve rapidly, demanding enhanced security. This Ultimate Web Authentication Handbook offers a comprehensive journey into this realm. Beginning with web authentication basics, it builds a strong foundation. You'll explore cryptography fundamentals, essential for secure authentication. The book delves into the connection between authentication and network security, mastering federated authentication via OAuth and OIDC protocols. 
 
@@ -67,7 +66,10 @@ you into accessing their sites as trusted sites. Here are some recommendations:
 Server Root (`sroot`), Server Intermediate (`sint`), and Server certificates 
 (`mysrv.local, idp.local, hr.mysrv.local, finance.mysrv.local, etc.`), and
 - Client Root (`croot`) , Client Intermediate (`cint`), and Client certificates 
-  (`alice`). 
+  (`alice`).
+- Some browsers, like Chrome, can import local root certificates to a specific 
+  profile. You can use that profile while running the sample code to minimize 
+  the exposure to the internet. 
 
 Use those private hierarchies for your experiments. A rogue actor cannot access 
 your private certificate hierarchy. 
