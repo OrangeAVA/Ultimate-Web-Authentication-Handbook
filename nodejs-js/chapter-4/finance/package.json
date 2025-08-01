@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@node-saml/node-saml": "^5.0.1",
+    "cross-env": "^10.0.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "main": "finance.js",
+  "scripts": {
+    "start": "cross-env NODE_EXTRA_CA_CERTS=certs/ssl/scas.crt node finance.js",
+    "dev": "cross-env NODE_EXTRA_CA_CERTS=certs/ssl/scas.crt nodemon finance.js"
+  }
+}

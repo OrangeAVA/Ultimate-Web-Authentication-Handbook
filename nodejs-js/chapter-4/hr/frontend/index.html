@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>HR Application</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 40px; background: #eaf3fb; color: #183153; }
+      .header { display: flex; align-items: center; gap: 20px; }
+      textarea { resize: none; width: 200px; height: 24px; background: #f0f6fc; border: 1px solid #7bb1e0; color: #183153; }
+      table { border-collapse: collapse; margin-top: 30px; width: 400px; background: #f7fbff; }
+      th, td { border: 1px solid #7bb1e0; padding: 8px 12px; text-align: left; }
+      th { background: #b3d4fc; color: #183153; }
+      button { padding: 6px 16px; background: #3182ce; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+      button:disabled { background: #a0aec0; color: #e2e8f0; cursor: not-allowed; }
+    </style>
+  </head>
+  <body>
+  <h1>HR Application</h1>
+  <div class="header" style="margin-bottom: 20px;">
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" disabled>SAML Logout</button>
+    <textarea id="displayName" readonly></textarea>
+  </div>
+  <table id="leaveTable">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Pending Leaves</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+
+    // Example users data
+    const users = [
+      { id: "PlaceHolder", leaves: "NA" },
+    ];
+
+  var currentUser = null;
+  async function fetchUsers() {
+    try {
+      const response = await fetch('/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+      const data = await response.json();
+      console.log('Fetched users:', data);
+      users.length = 0;
+      data.forEach(u => users.push(u));
+      renderTable();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Call fetchUsers on every login and logout, and after UI updates
+  async function updateUI() {
+    if (currentUser) {
+      displayNameArea.value = currentUser;
+      loginBtn.disabled = true;
+      logoutBtn.disabled = false;
+    } else {
+      displayNameArea.value = '';
+      loginBtn.disabled = false;
+      logoutBtn.disabled = true;
+    }
+    await fetchUsers();
+  }
+
+    const displayNameArea = document.getElementById('displayName');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const leaveTableBody = document.getElementById('leaveTable').querySelector('tbody');
+
+    function renderTable() {
+      leaveTableBody.innerHTML = '';
+      users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${user.id}</td><td>${user.leaves}</td>`;
+        leaveTableBody.appendChild(tr);
+      });
+    }
+
+    function updateUI() {
+      fetch('/auth/user')
+      .then(response => response.json())
+      .then(user => {
+        currentUser = user.user;
+        displayNameArea.value = currentUser;
+        loginBtn.disabled = true;
+        logoutBtn.disabled = false;
+      })
+      .catch(err => {
+        console.error('Error fetching user:', err);
+        displayNameArea.value = '';
+        loginBtn.disabled = false;
+        logoutBtn.disabled = true;
+      });
+      fetchUsers();
+    }
+
+    loginBtn.onclick = function() {
+      window.location = '/auth/login';
+    };
+
+    logoutBtn.onclick = function() {
+      currentUser = null;
+      window.location = '/auth/logout';
+    };
+
+    window.onload = function() {
+      renderTable();
+      updateUI();
+    };
+  </script>
+</body>
+</html>

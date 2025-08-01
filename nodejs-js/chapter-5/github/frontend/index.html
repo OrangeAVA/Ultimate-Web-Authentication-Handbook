@@ -1,0 +1,61 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script>
+      function btnclick(elem){
+        if (elem.id == "login")
+          location.href = "/oauth/login";
+        else
+          location.href = "/oauth/logout";
+      }
+
+      function update(v) {
+        document.getElementById("username").innerText = v.login;
+        document.getElementById("image").src = v.avatar_url;
+        document.getElementById("name").innerText = v.name;
+        document.getElementById("email").innerText = v.email;
+      }
+
+      window.onload = function() {
+        fetch('/resource')
+          .then(res => {
+            if (!res.ok){
+              console.log("failed to load");
+              throw Error("Not logged in");
+            } else {
+              return res.json();
+            }
+          })
+          .then(v => {
+            update(v);
+          }).catch(e => console.log(e));
+      };
+    </script>
+    <h1>GitHub User Profile</h1>
+    <button id="login" type="button" onclick="btnclick(this);">Login</button>
+    <button id="logout" type="button" onclick="btnclick(this);">Logout</button>
+    <table>
+      <tr>
+          <td id="username">
+            username
+          </td>
+      </tr>
+      <tr>
+        <td>
+          <img id="image" src="no-image.png" width="200" height="200"/>
+        </td>
+      </tr>
+      <tr>
+        <td id="name">
+          Name
+        </td>
+      </tr>
+      <tr>
+        <td id="email">
+          Email
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

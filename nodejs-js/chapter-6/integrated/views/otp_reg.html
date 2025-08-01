@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register OTP</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+    .container { max-width: 350px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px 32px 32px 32px; }
+    .qr-img { display: block; margin: 0 auto 16px auto; border: 1px solid #eee; border-radius: 4px; }
+    .secret { text-align: center; font-size: 1.1em; margin-bottom: 18px; color: #333; letter-spacing: 2px; background: #f3f3f3; padding: 8px 0; border-radius: 4px; }
+    .instructions { background: #eaf6ff; color: #005a9e; border-radius: 4px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.98em; text-align: justify; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 8px; margin-bottom: 18px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; }
+    .btn-group { display: flex; justify-content: space-between; }
+    button { padding: 8px 18px; border: none; border-radius: 4px; font-size: 1em; cursor: pointer; }
+    .register-btn { background: #0078d4; color: #fff; }
+    .cancel-btn { background: #eee; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center;">Register OTP</h2>
+    <div class="instructions">
+        Scan the QR code below with your OTP application (such as Google Authenticator or Microsoft Authenticator) 
+        or enter the secret key manually.
+    </div>
+    <img class="qr-img" id="qrcode" src="#" alt="OTP QR Code" width="180" height="180">
+    <div class="secret" id="show_secret">Secret: XXXXXXXXXXXX</div>
+    <div class="instructions">
+        After importing the secret in your app, enter the first OTP generated to complete registration.
+    </div>
+    <form method="POST">
+      <input type="hidden" id="secret" name="secret">
+      <label for="otp">Enter OTP from your Authenticator app:</label>
+      <input type="text" id="otp" name="otp" autocomplete="one-time-code" required>
+      <div class="btn-group">
+        <button type="submit" class="register-btn">Register</button>
+        <button type="button" class="cancel-btn" onclick="abort()">Skip</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    let uid = '<UID>'; 
+    const {username, secret} = {RESULT};
+    window.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      form.action = `/interaction/${uid}`;
+      document.getElementById('qrcode').src = `/qrcode?data=otpauth://totp/${username}?secret=${encodeURIComponent(secret)}`;
+      document.getElementById('secret').value = secret;
+      document.getElementById('qrcode').alt = `OTP QR Code for secret ${secret}`;
+      document.getElementById('show_secret').textContent = `Secret: ${secret}`;
+    });
+    function abort() {
+      window.location.href = `/interaction/${uid}/skip`;
+    }
+  </script>
+</body>
+</html>

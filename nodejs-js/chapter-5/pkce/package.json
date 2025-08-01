@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "cross-env": "^10.0.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "openid-client": "^6.5.0",
+    "openurl": "^1.1.1"
+  },
+  "scripts": {
+    "client": "cross-env NODE_EXTRA_CA_CERTS=../certs/sroot.crt node client.js",
+    "resource": "node resource.js"
+  }
+}

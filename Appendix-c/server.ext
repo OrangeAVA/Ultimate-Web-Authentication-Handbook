@@ -1,4 +1,0 @@
-basicConstraints = CA:false
-keyUsage = digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
-extendedKeyUsage = serverAuth
-subjectAltName = DNS:mysrv.local

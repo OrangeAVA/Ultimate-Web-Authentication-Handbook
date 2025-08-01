@@ -1,0 +1,237 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch1",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-1/index.js",
+      "cwd": "${workspaceFolder}/chapter-1"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch2",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-2/index.js",
+      "cwd": "${workspaceFolder}/chapter-2"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch3",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-3/index.js",
+      "cwd": "${workspaceFolder}/chapter-3"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch4 idp",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/chapter-4/idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch4 finance",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/chapter-4/finance",
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch4 hr",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/chapter-4/hr",
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 github authcode",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/github/authcode.js",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "env": {
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 github device",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/github/device.js",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "env": {
+        "GH_CLIENT_ID": ""
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 google oidc",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-5/google/index.js",
+      "cwd": "${workspaceFolder}/chapter-5/google",
+      "env": {
+        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_SECRET": ""
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 idp",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}/chapter-5/idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 pkce resource server",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "resource"],
+      "cwd": "${workspaceFolder}/chapter-5/pkce"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch5 pkce client",
+      "skipFiles": [
+      "<node_internals>/**"
+      ],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "client"],
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "preLaunchTask": "wait-for-ch5-idp-and-resource"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 otp",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-6/otp/index.js",
+      "cwd": "${workspaceFolder}/chapter-6/otp"
+    },  
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 webauthn",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/chapter-6/webauthn/index.js",
+      "cwd": "${workspaceFolder}/chapter-6/webauthn"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 integrated idp",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "idp"],
+      "cwd": "${workspaceFolder}/chapter-6/integrated"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch6 integrated mysrv",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "mysrv"],
+      "cwd": "${workspaceFolder}/chapter-6/integrated",
+      "preLaunchTask": "wait-for-ch6-integrated-idp"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ch7 face match",
+      "program": "${workspaceFolder}/chapter-7/face.js",
+      "cwd": "${workspaceFolder}/chapter-7",
+      "windows": {
+        "runtimeExecutable": "wsl",
+        "runtimeArgs": ["npm"]
+      },
+      "linux": {
+        "runtimeExecutable": "node"
+      },
+      "osx": {
+        "runtimeExecutable": "node"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ch4",
+      "configurations": [
+        "ch4 idp",
+        "ch4 finance",
+        "ch4 hr"
+      ]
+    },
+    {
+      "name": "ch5 pkce",
+      "configurations": [
+        "ch5 idp",
+        "ch5 pkce resource server",
+        "ch5 pkce client"
+      ],
+    },
+    {
+      "name": "ch6 integrated",
+      "configurations": [
+        "ch6 integrated idp",
+        "ch6 integrated mysrv"
+      ]
+    }
+  ]
+}

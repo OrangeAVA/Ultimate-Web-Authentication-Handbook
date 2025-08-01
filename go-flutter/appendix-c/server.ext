@@ -1,0 +1,4 @@
+basicConstraints = CA:false
+keyUsage = digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = DNS:mysrv.local, DNS:hr.mysrv.local, DNS:finance.mysrv.local, DNS:idp.local

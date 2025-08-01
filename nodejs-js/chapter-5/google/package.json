@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "openid-client": "^6.5.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
