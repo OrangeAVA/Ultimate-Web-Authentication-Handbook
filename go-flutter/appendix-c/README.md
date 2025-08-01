@@ -18,6 +18,6 @@ The following changes are introduced in the certificate creation process.
 10. The certificates used to sign SAML requests and responses are self-signed
     certificates with no additional hierarchies.
 11. All certificates are valid for 5 years and will expire in May 2030. 
-12. The keys and certificates are stored in the (output)[output] directory. 
+12. The keys and certificates are stored in the [output](output) directory. 
     Softlinks in other folders directly or indirectly access the files in 
     this location.  
