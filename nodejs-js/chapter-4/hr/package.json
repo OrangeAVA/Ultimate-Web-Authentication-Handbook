@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@node-saml/node-saml": "^5.0.1",
+    "cross-env": "^10.0.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "xml2js": "^0.6.2"
@@ -10,7 +11,7 @@
   },
   "main": "hr.js",
   "scripts": {
-    "start": "node hr.js",
-    "dev": "nodemon hr.js"
+    "start": "cross-env NODE_EXTRA_CA_CERTS=certs/ssl/scas.crt node hr.js",
+    "dev": "cross-env NODE_EXTRA_CA_CERTS=certs/ssl/scas.crt nodemon hr.js"
   }
 }

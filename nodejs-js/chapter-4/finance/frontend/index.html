@@ -150,11 +150,8 @@
     };
 
     logoutBtn.onclick = function() {
-      fetch('/auth/logout')
-      .then(_ => {
-        currentUser = null;
-        window.location.reload();
-      });
+      currentUser = null;
+      window.location = '/auth/logout';
     };
 
     window.onload = function() {

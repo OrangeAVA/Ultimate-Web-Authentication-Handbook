@@ -181,11 +181,20 @@ async function config_saml_sp(app){
   app.get('/auth/logout', (req, res) => {
     if (!req.session?.profile) {
       console.log('No user session to log out');
+      res.redirect('/');
     } else {
+      saml.getLogoutUrlAsync(req.session.profile, '/')
+        .then(logoutUrl => {
+          console.log('Redirecting to SAML logout URL:', logoutUrl);
+          res.redirect(logoutUrl);
+        })
+        .catch(err => {
+          console.error('Error generating SAML logout URL:', err);
+          delete req.session.profile;
+          res.redirect('/');
+        });
       console.log('Logging out user:', req.session.profile.nameID);
     }
-    delete req.session.profile;
-    res.redirect('/');
   });
 
   app.get('/auth/login', (req, res) => {
@@ -243,12 +252,19 @@ const app = express();
 app.use(express.static('frontend'));
 app.use(express.urlencoded({ extended: true }));
 
+/*
 app.use(
   (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://idp.local:8443');
+    res.append('Access-Control-Allow-Origin', [
+      'https://hr.mysrv.local:8444',
+      'https://idp.local:8443'
+    ]);
+    res.append('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.append('Access-Control-Allow-Credentials', 'true');
     next();
   }
-);
+);*/
 
 const maxAge = 1000 * 60 * 60 * 2; // 2 hours
 var session = require('express-session');

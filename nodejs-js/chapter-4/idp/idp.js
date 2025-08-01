@@ -630,7 +630,14 @@ app.get('/idp/logout', (req, res, next) => {
 
 app.use(
   (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://hr.mysrv.local:8444, https://finance.mysrv.local:8445, https://idp.local:8443');
+    res.append('Access-Control-Allow-Origin', [
+      'https://hr.mysrv.local:8444',
+      'https://finance.mysrv.local:8445',
+      'https://idp.local:8443'
+    ]);
+    res.append('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.append('Access-Control-Allow-Credentials', 'true');
     next();
   }
 );

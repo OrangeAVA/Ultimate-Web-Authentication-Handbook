@@ -44,9 +44,6 @@
       "console": "integratedTerminal",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start"],
-      "env":{
-        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
-      },
       "cwd": "${workspaceFolder}/chapter-4/idp"
     },
     {
@@ -59,9 +56,6 @@
       "console": "integratedTerminal",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start"],
-      "env":{
-        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
-      },
       "cwd": "${workspaceFolder}/chapter-4/finance",
       "preLaunchTask": "wait-for-ch4-idp"
     },
@@ -75,9 +69,6 @@
       "console": "integratedTerminal",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start"],
-      "env":{
-        "NODE_EXTRA_CA_CERTS":"./certs/ssl/scas.crt"
-      },
       "cwd": "${workspaceFolder}/chapter-4/hr",
       "preLaunchTask": "wait-for-ch4-idp"
     },
