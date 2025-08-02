@@ -1,4 +1,4 @@
-*This repository utilizes symlinks on all platforms. Please use the following command on GitHub before cloning this repository.*
+*This repository utilizes symlinks on all platforms. Please use the following command on the local machine before cloning this repository.*
 
 `git config --global core.symlinks true`
 
