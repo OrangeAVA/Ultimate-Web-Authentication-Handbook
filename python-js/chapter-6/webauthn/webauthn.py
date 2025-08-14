@@ -3,12 +3,6 @@ import ssl
 from flask import Flask, request, jsonify, send_from_directory
 from fido2.server import Fido2Server
 from fido2.webauthn import PublicKeyCredentialRpEntity, PublicKeyCredentialUserEntity
-from fido2.utils import websafe_decode
-# from fido2.ctap2 import AttestationObject, AuthenticatorData
-from fido2 import cbor
-from flask import Response
-import json
-
 
 app = Flask(__name__, static_folder='frontend')
 
