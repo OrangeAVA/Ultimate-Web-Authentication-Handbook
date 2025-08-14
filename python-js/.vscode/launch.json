@@ -37,6 +37,15 @@
       "program": "${workspaceFolder}/chapter-6/otp/otp.py",
       "cwd": "${workspaceFolder}/chapter-6/otp",
       "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "ch6 webauthn",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/webauthn/webauthn.py",
+      "cwd": "${workspaceFolder}/chapter-6/webauthn",
+      "console": "integratedTerminal",
       "justMyCode": false
     },
     {

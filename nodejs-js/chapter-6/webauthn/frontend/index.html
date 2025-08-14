@@ -9,7 +9,7 @@
 -->
 <html>
   <head>
-    <script src="/js-base64/base64.js"></script>
+    <script src="https://unpkg.com/js-base64/base64.js"></script>
     <script>
       async function register(){
         username = document.getElementById("ruser").value;
@@ -35,7 +35,7 @@
           const clientDataJSON = Base64.fromUint8Array(new Uint8Array(cred.response.clientDataJSON), true);
 
           const cc = {
-            id: Base64.encodeURI(cred.id),
+            id: cred.id,
             rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
             response: {attestationObject, clientDataJSON},
             type: 'public-key'
@@ -87,7 +87,7 @@
           const signature = Base64.fromUint8Array(new Uint8Array(cred.response.signature), true);
 
           const cc = {
-            id: Base64.encodeURI(cred.id),
+            id: cred.id,
             rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
             response: {authenticatorData, clientDataJSON, signature},
             type: 'public-key'
