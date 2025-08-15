@@ -94,7 +94,7 @@
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const imageData = canvas.toDataURL('image/png');
+      const imageData = canvas.toDataURL('image/jpeg');
       if (captureCount === 0) {
         image1.src = imageData;
       } else {
