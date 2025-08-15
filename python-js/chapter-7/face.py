@@ -1,6 +1,5 @@
 import base64
 import io
-import os
 from flask import Flask, request, jsonify, send_from_directory
 from PIL import Image
 import numpy as np
@@ -38,8 +37,8 @@ def serve_index():
 @app.route('/compare', methods=['POST'])
 def compare_faces():
   data = request.get_json()
-  img1_data = data.get('image1')
-  img2_data = data.get('image2')
+  img1_data = data.get('img1')
+  img2_data = data.get('img2')
   if not img1_data or not img2_data:
     return jsonify({'error': 'Both image1 and image2 are required'}), 400
 
@@ -59,4 +58,4 @@ def compare_faces():
   return jsonify({'similarity': similarity})
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5000)
+  app.run(host='0.0.0.0', port=8080)

@@ -31,6 +31,44 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "ch5 github authcode",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/github/authcode.py",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "console": "integratedTerminal",
+      "env": {
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "ch5 github device",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/github/device.py",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "console": "integratedTerminal",
+      "env": {
+        "GH_CLIENT_ID": ""
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "ch5 google oidc",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/google/google.py",
+      "cwd": "${workspaceFolder}/chapter-5/google",
+      "console": "integratedTerminal",
+      "env": {
+        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_SECRET": ""
+      },
+      "justMyCode": false
+    },
+    {
       "name": "ch6 otp",
       "type": "debugpy",
       "request": "launch",
@@ -46,7 +84,7 @@
       "program": "${workspaceFolder}/chapter-6/webauthn/webauthn.py",
       "cwd": "${workspaceFolder}/chapter-6/webauthn",
       "console": "integratedTerminal",
-      "justMyCode": false
+      "justMyCode": true
     },
     {
       "name": "ch7",
@@ -54,7 +92,8 @@
       "request": "launch",
       "program": "${workspaceFolder}/chapter-7/face.py",
       "cwd": "${workspaceFolder}/chapter-7",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }
