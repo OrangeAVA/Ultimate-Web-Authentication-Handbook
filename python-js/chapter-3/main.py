@@ -73,4 +73,4 @@ if __name__ == '__main__':
   if CLIENT_AUTH:
     context.verify_mode = ssl.CERT_REQUIRED
     context.load_verify_locations(CA_CERT)
-  app.run(host='mysrv.local', port=PORT, ssl_context=context)
+  app.run(host='0.0.0.0', port=PORT, ssl_context=context)

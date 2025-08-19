@@ -11,7 +11,7 @@ GH_CLIENT_ID = os.environ.get('GH_CLIENT_ID')
 GH_CLIENT_SECRET = os.environ.get('GH_CLIENT_SECRET')
 
 if not GH_CLIENT_ID or not GH_CLIENT_SECRET:
-    raise SystemExit("GH_CLIENT_ID and GH_CLIENT_SECRET environment variables must be set and non-blank.")
+  raise SystemExit("GH_CLIENT_ID and GH_CLIENT_SECRET environment variables must be set and non-blank.")
 
 GH_AUTH_URL = "https://github.com/login/oauth/authorize"
 GH_TOKEN_URL = "https://github.com/login/oauth/access_token"
@@ -109,4 +109,4 @@ if not os.path.exists(CHAIN_CERT):
 if __name__ == '__main__':
   context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
   context.load_cert_chain(CHAIN_CERT, SERVER_KEY, password="password")
-  app.run(host='mysrv.local', port=8443, ssl_context=context)
+  app.run(host='0.0.0.0', port=8443, ssl_context=context)
