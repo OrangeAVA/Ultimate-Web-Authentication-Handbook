@@ -31,6 +31,35 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "ch4 idp",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/idp/idp.py",
+      "cwd": "${workspaceFolder}/chapter-4/idp",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch4 hr",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/hr/hr.py",
+      "cwd": "${workspaceFolder}/chapter-4/hr",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
+      "name": "ch4 finance",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/finance/finance.py",
+      "cwd": "${workspaceFolder}/chapter-4/finance",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
       "name": "ch5 github authcode",
       "type": "debugpy",
       "request": "launch",
@@ -94,6 +123,16 @@
       "cwd": "${workspaceFolder}/chapter-7",
       "console": "integratedTerminal",
       "justMyCode": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ch4",
+      "configurations": [
+        "ch4 idp",
+        "ch4 finance",
+        "ch4 hr"
+      ]
     }
   ]
 }

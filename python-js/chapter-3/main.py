@@ -66,7 +66,7 @@ if __name__ == '__main__':
   with open(SERVER_CERT, 'r') as sc, open(SERVER_INTERMEDIATE, 'r') as ca:
     cert_chain = sc.read() + ca.read()
   # Write the concatenated chain to a temp file
-  chain_file = 'certs/server/serverchain.crt'
+  chain_file = 'certs/server/mysrv.local.chain.crt'
   with open(chain_file, 'w') as f:
     f.write(cert_chain)
   context.load_cert_chain(certfile=chain_file, keyfile=SERVER_KEY, password="password")

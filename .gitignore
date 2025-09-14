@@ -1,3 +1,7 @@
 *.exe
 **/out/*
 go-flutter/appendix-c/output/debug.log
+*.chain.crt
+client_secret*.json
+*.dec.key
+python-js/chapter-4/*/*.xml
