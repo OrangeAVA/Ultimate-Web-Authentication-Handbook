@@ -1,0 +1,4 @@
+# .gitignore: Ignore SQLite database files
+*.sqlite3
+**/__pycache__/
+**/*.pyc

@@ -98,6 +98,34 @@
       "justMyCode": false
     },
     {
+      "name": "ch5 idp (Django)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/idp/manage.py",
+      "cwd": "${workspaceFolder}/chapter-5/idp",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch5 pkce resource server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/pkce/resource.py",
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch5 pkce client",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/pkce/client.py",
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "preLaunchTask": "wait-for-ch5-idp-and-resource"
+    },
+    {
       "name": "ch6 otp",
       "type": "debugpy",
       "request": "launch",
