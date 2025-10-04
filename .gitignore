@@ -5,3 +5,10 @@ go-flutter/appendix-c/output/debug.log
 client_secret*.json
 *.dec.key
 python-js/chapter-4/*/*.xml
+*.decrypted.key
+**/flask_session/*
+**/__pycache__/*
+**/*.pyc
+*.log
+*.env
+*.sqlite3

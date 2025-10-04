@@ -144,6 +144,24 @@
       "justMyCode": true
     },
     {
+      "name": "ch6 integrated idp",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/integrated/idp/manage.py",
+      "cwd": "${workspaceFolder}/chapter-6/integrated/idp",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "ch6 integrated mysrv",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/integrated/mysrv.py",
+      "cwd": "${workspaceFolder}/chapter-6/integrated",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },  
+    {
       "name": "ch7",
       "type": "debugpy",
       "request": "launch",
@@ -160,6 +178,21 @@
         "ch4 idp",
         "ch4 finance",
         "ch4 hr"
+      ]
+    },
+    {
+      "name": "ch5 pkce",
+      "configurations": [
+        "ch5 idp (Django)",
+        "ch5 pkce resource server",
+        "ch5 pkce client"
+      ]
+    },
+    {
+      "name": "ch6 integrated",
+      "configurations": [
+        "ch6 integrated idp",
+        "ch6 integrated mysrv"
       ]
     }
   ]
