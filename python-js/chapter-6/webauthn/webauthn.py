@@ -1,3 +1,4 @@
+import enum
 import os
 import ssl
 from flask import Flask, request, jsonify, send_from_directory
@@ -18,6 +19,18 @@ SESSIONS = {}
 def hello():
   return "Hello, World!"
 
+def enumsToString(obj):
+  # Recursively traverse dicts, lists/tuples and convert enum.Enum instances to strings
+  if isinstance(obj, dict):
+    return {k: enumsToString(v) for k, v in obj.items()}
+  if isinstance(obj, list):
+    return [enumsToString(v) for v in obj]
+  if isinstance(obj, tuple):
+    return tuple(enumsToString(v) for v in obj)
+  if isinstance(obj, enum.Enum):
+    return obj.value
+  return obj
+
 @app.route('/webauthn/register/begin', methods=['POST'])
 def register_begin():
   username = request.args.get('username')
@@ -34,7 +47,7 @@ def register_begin():
   )
   SESSIONS[state] = {'register': state_obj, 'username': username}
   public_key_options = registration_data['publicKey']
-  return jsonify(public_key_options)
+  return jsonify(enumsToString(public_key_options))
 
 @app.route('/webauthn/register/finish', methods=['POST'])
 def register_finish():
@@ -67,7 +80,7 @@ def login_begin():
   )
   SESSIONS[state] = {'login': state_obj, 'username': username}
   publicKey = auth_data['publicKey']
-  return jsonify(publicKey)  # Uncomment if you want to use JSON response
+  return jsonify(enumsToString(publicKey))
 
 @app.route('/webauthn/login/finish', methods=['POST'])
 def login_finish():
@@ -112,4 +125,4 @@ if not os.path.exists(CHAIN_CERT):
 if __name__ == '__main__':
   context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
   context.load_cert_chain(CHAIN_CERT, SERVER_KEY, password="password")
-  app.run(host='mysrv.local', port=8443, ssl_context=context)
+  app.run(host='0.0.0.0', port=8443, ssl_context=context)

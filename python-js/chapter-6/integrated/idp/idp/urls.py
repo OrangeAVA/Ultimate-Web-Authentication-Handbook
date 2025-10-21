@@ -21,6 +21,7 @@ from oidc_provider import urls as oidc_provider_urls
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.decorators import login_required
 from idp.helpers import userinfo
+from idp.views import LoginView, OTPRegistrationView, WebAuthnRegistrationView
 
 @login_required
 def _userinfo(request):
@@ -38,7 +39,9 @@ def logout(request):
 urlpatterns = [
   path('admin/', admin.site.urls),
   path('oidc/', include(oidc_provider_urls, namespace='oidc_provider')),
-  path('accounts/', include('django.contrib.auth.urls')),
+  path('accounts/login/', LoginView.as_view(), name='login'),
+  path('register/otp/', OTPRegistrationView.as_view(), name='register_otp'),
+  path('register/webauthn/', WebAuthnRegistrationView.as_view(), name='register_webauthn'),
   path('userinfo/', _userinfo),
   path('', index)
 ]

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register OTP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+    .login-container { max-width: 480px; margin: 80px auto; background: #fff; padding: 30px 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .login-container h2 { margin-bottom: 18px; text-align: center; }
+    .instructions { background: #eaf6ff; color: #005a9e; border-radius: 4px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.98em; text-align: left; }
+    .qr-img { display: block; margin: 10px auto 14px auto; border: 1px solid #eee; border-radius: 4px; }
+    .secret { text-align: center; font-size: 1.05em; margin-bottom: 14px; color: #333; letter-spacing: 2px; background: #f3f3f3; padding: 8px 0; border-radius: 4px; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; }
+    .btn { width: 100%; padding: 10px; background: #0078d7; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    .btn:hover { background: #005fa3; }
+    .btn-secondary { background: #ccc; color: #333; margin-top: 8px; }
+    .btn-row { display: flex; gap: 8px; }
+    .btn-row .btn { flex: 1; width: auto; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Register OTP</h2>
+
+    <div class="instructions">
+      Scan the QR code below with your OTP application (such as Google Authenticator or Microsoft Authenticator),
+      or enter the secret key manually. After importing the secret, enter the first OTP generated to complete registration.
+    </div>
+
+    <img class="qr-img" id="qrcode" src={{imgsrc}} alt="OTP QR Code" width="180" height="180">
+    <div class="secret" id="show_secret">{{secret}}</div>
+    {% if error %}
+    <div style="color: red; margin-bottom: 16px;">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      {% csrf_token %}      
+      {{ form.as_p }}
+      <div class="btn-row">
+        <button type="submit" class="btn">Register</button>
+        <button type="submit" name="cancel" value="1" class="btn btn-secondary" style="margin-top:0;">Skip</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

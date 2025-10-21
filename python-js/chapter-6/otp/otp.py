@@ -110,4 +110,4 @@ if not os.path.exists(CHAIN_CERT):
 if __name__ == '__main__':
   context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
   context.load_cert_chain(CHAIN_CERT, SERVER_KEY, password="password")
-  app.run(host='mysrv.local', port=8443, ssl_context=context)
+  app.run(host='0.0.0.0', port=8443, ssl_context=context)

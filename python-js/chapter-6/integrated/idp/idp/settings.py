@@ -39,7 +39,8 @@ INSTALLED_APPS = [
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'oidc_provider',
-  'sslserver',    
+  'sslserver',
+  'idp'   
 ]
 
 MIDDLEWARE = [

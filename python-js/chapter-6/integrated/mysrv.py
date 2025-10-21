@@ -23,7 +23,7 @@ SERVER_ROOT = os.path.abspath(os.path.join(SSL_CERTS_DIR, 'sroot.crt'))
 
 # OpenID Connect configuration
 OIDC_ISSUER = 'https://idp.local:8443/oidc'
-OIDC_CLIENT_ID = '580120' # Replace with your actual client ID
+OIDC_CLIENT_ID = '651202' # Replace with your actual client ID
 OIDC_REDIRECT_URI = 'https://mysrv.local:8444/oauth/callback'
 OIDC_LOGOUT_REDIRECT_URI = 'https://mysrv.local:8444/oauth/callback/logout'
 

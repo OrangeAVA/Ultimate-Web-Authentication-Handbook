@@ -25,9 +25,17 @@
 
         if (res.ok){
           const publicKey = await res.json();
+          console.log("Reg PublicKey:", publicKey);
           publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
           const textEncoder = new TextEncoder();
           publicKey.user.id = textEncoder.encode(publicKey.user.id);
+
+          if (Array.isArray(publicKey.excludeCredentials)) {
+            for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
+              const cred = publicKey.excludeCredentials[i];
+              cred.id = Base64.toUint8Array(cred.id);
+            }
+          }
 
           const cred = await window.navigator.credentials.create({publicKey});
 
@@ -73,9 +81,15 @@
 
         if (res.ok){
           const publicKey = await res.json();
+          console.log("Auth PublicKey:", publicKey);
           publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
-          const id = publicKey.allowCredentials[0].id;
-          publicKey.allowCredentials[0].id = Base64.toUint8Array(id); 
+
+          if (Array.isArray(publicKey.allowCredentials)) {
+            for (let i = 0; i < publicKey.allowCredentials.length; i++) {
+              const cred = publicKey.allowCredentials[i];
+              cred.id = Base64.toUint8Array(cred.id);
+            }
+          }
 
           console.log("PublicKey:", publicKey);
 

@@ -4,48 +4,14 @@
   <meta charset="UTF-8">
   <title>2-FA Test Server</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #222;
-      color: #fff;
-      padding: 16px 24px;
-    }
-    .auth-buttons {
-      display: flex;
-      gap: 8px;
-    }
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 60px;
-    }
-    .user-box {
-      margin-top: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    input[type="text"] {
-      padding: 6px 10px;
-      font-size: 1rem;
-    }
-    .userinfo-table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 8px;
-    }
-    .userinfo-table td, .userinfo-table th {
-      border: 1px solid #888;
-      padding: 6px 12px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header { display: flex; justify-content: space-between; align-items: center; background: #222; color: #fff; padding: 16px 24px; }
+    .auth-buttons { display: flex; gap: 8px; }
+    main { display: flex; flex-direction: column; align-items: center; margin-top: 60px; }
+    .user-box { margin-top: 24px; display: flex; align-items: center; gap: 8px; }
+    input[type="text"] { padding: 6px 10px; font-size: 1rem; }
+    .userinfo-table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+    .userinfo-table td, .userinfo-table th { border: 1px solid #888; padding: 6px 12px; }
   </style>
 </head>
 <body>
@@ -89,7 +55,7 @@
             `<tr><td>${key}</td><td>${value}</td></tr>`
           ).join('') +
           '</table>';
-          usernameInput.value = data.sub || '';
+          usernameInput.value = data?.name || data?.sub || '';
         } catch (err) {
           document.getElementById('userinfo').innerHTML = `<span class="userinfo-error">${err.message}</span>`;
           usernameInput.value = '';
