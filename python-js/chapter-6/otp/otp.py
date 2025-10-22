@@ -1,13 +1,10 @@
+import io
 import os
-import json
-from flask import Flask, send_from_directory, jsonify, abort
-from flask import request
+from flask import Flask, send_from_directory, jsonify
 import pyotp
 import qrcode
-from io import BytesIO
-from base64 import b64encode
+import base64
 import ssl
-import uuid
 
 app = Flask(__name__)
 
@@ -35,11 +32,10 @@ def register(user, otp_type):
 
   # Generate QR code and save as PNG
   qr = qrcode.make(uri)
-  os.makedirs(IMAGES_DIR, exist_ok=True)
-  temp_filename = f"{user}_{otp_type}_{uuid.uuid4().hex[:8]}.png"
-  qr_path = os.path.join(IMAGES_DIR, temp_filename)
   qr = qr.resize((180, 180))
-  qr.save(qr_path)
+  buffered = io.BytesIO()
+  qr.save(buffered, format="PNG")
+  imgsrc = "data:image/png;base64," + base64.b64encode(buffered.getvalue()).decode()
 
   users[user] = {
     'type': otp_type,
@@ -52,7 +48,7 @@ def register(user, otp_type):
     'type': otp_type,
     'secret': secret,
     'counter': counter,
-    'qrfile': f'/images/{temp_filename}'
+    'qrfile': imgsrc
   })
 
 @app.route('/validate/<user>/<otp_token>')
