@@ -1,3 +1,19 @@
+# otp.py
+# A simple Flask web application for demonstrating TOTP and HOTP-based
+# One-Time Password (OTP) authentication. Users can register for either
+# TOTP or HOTP, receive a QR code for authenticator app setup, and validate
+# OTP tokens. The app serves a frontend, static images, and runs over HTTPS
+# with a custom certificate chain.
+# Endpoints:
+# - /register/<user>/<otp_type>: Register a user for TOTP or HOTP, returns
+#   secret and QR code.
+# - /validate/<user>/<otp_token>: Validate a submitted OTP token.
+# - /hello: Simple test endpoint.
+# - /: Serves the frontend index.html.
+# - /images/<filename>: Serves static images.
+# SSL certificates are loaded from the ../certs directory and combined into
+# a chain for secure HTTPS communication.
+
 import io
 import os
 from flask import Flask, send_from_directory, jsonify

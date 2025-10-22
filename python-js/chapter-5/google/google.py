@@ -1,6 +1,26 @@
+# Google OAuth2 demo Flask app.
+#
+# Provides a minimal OpenID Connect / OAuth 2.0 flow using Google:
+# - /oauth/login: redirect to Google's authorization endpoint.
+# - /oauth/callback: exchange authorization code for tokens and store
+#   tokens in the Flask session.
+# - /oauth/logout: clear the session and sign the user out locally.
+# - /userinfo: fetch profile from Google's userinfo endpoint using the
+#   access_token from session.
+# - /idtoken: decode the ID token from session.
+#   Signature verification is disabled in this demo.
+#
+# Configuration via env vars: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+# SECRET_KEY (defaults to 'dev_secret_key'). Static frontend files served
+# from the 'frontend' folder. Runs on localhost:8444 when executed.
+#
+# Security note: for demo only. Do not disable ID token signature
+# verification in production and avoid default keys.
+#
+
 import os
 import requests
-from flask import Flask, redirect, request, session, url_for, send_from_directory, jsonify
+from flask import Flask, redirect, request, session, send_from_directory, jsonify
 from urllib.parse import urlencode
 import jwt 
 

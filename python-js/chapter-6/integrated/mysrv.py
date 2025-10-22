@@ -1,4 +1,47 @@
-from flask import Flask, session, redirect, url_for, request, send_from_directory, jsonify
+# mysrv.py - Flask-based web server implementing OpenID Connect authentication
+# with PKCE, session management, and static file serving.
+#
+# This server demonstrates integration with an OpenID Connect (OIDC) provider
+# using the Authorization Code flow with PKCE for secure authentication. It
+# serves static frontend files, manages user sessions, and handles login,
+# logout, and userinfo retrieval via OIDC endpoints.
+#
+# Key Features:
+# - Serves static files from the 'frontend' directory.
+# - Uses Flask-Session for server-side session management.
+# - Implements OIDC login with PKCE (Proof Key for Code Exchange).
+# - Handles OIDC callback to exchange authorization code for tokens.
+# - Fetches user profile information from the OIDC userinfo endpoint.
+# - Supports OIDC logout and session clearing.
+# - Configures SSL/TLS with server, intermediate, and root certificates.
+#
+# Environment Variables:
+# - SECRET_KEY: Secret key for Flask session signing.
+#
+# Endpoints:
+# - '/': Serves the main index.html file.
+# - '/<path:filename>': Serves static files from the frontend directory.
+# - '/oauth/login': Initiates OIDC login flow.
+# - '/oauth/callback': Handles OIDC authorization code callback.
+# - '/oauth/logout': Initiates OIDC logout flow.
+# - '/oauth/callback/logout': Handles post-logout redirect.
+# - '/userinfo': Returns authenticated user's profile information.
+#
+# SSL/TLS:
+# - Loads server certificate, private key, and chain of trust for HTTPS.
+# - Expects certificates in the '../certs' directory relative to this file.
+#
+# Dependencies:
+# - Flask
+# - Flask-Session
+# - requests
+#
+# Note:
+# - Replace OIDC_CLIENT_ID and certificate paths with your actual values.
+# - Ensure the OIDC provider and certificate authority are trusted by your
+#   environment.
+
+from flask import Flask, session, redirect, request, send_from_directory, jsonify
 from flask_session import Session
 import os
 import ssl

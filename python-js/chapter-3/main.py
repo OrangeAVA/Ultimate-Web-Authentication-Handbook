@@ -1,16 +1,18 @@
 # main.py
-# 
-# This Flask application demonstrates HTTPS server setup with optional client certificate authentication
-# and HTTP Basic Authentication. It loads server and intermediate certificates, supports client cert
-# verification if enabled via the CLIENT_AUTH environment variable, and exposes two endpoints:
+#
+# This Flask app demonstrates HTTPS server setup with optional client cert
+# authentication and HTTP Basic Authentication. It loads server and
+# intermediate certificates, supports client cert verification if enabled
+# via the CLIENT_AUTH environment variable, and exposes two endpoints:
 #   - /hello: returns a simple greeting
 #   - /basicauth: requires HTTP Basic Auth with hardcoded credentials
-# 
+#
 # Certificate files are expected in the certs/server/ directory.
-# 
+#
 # Usage:
-#   CLIENT_AUTH=true python main.py   # to require client certificates
-#   python main.py                    # to run without client certificate verification
+#   CLIENT_AUTH=true python main.py   # require client certificates
+#   python main.py                    # run without client cert verification
+
 import base64
 from flask import Flask, request, Response
 import ssl

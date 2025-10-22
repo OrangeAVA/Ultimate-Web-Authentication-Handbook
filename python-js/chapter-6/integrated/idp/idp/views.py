@@ -1,3 +1,53 @@
+# Views for handling authentication and registration in a Django-based Identity
+# Provider (IDP) application. Supports multi-step login with username, password,
+# OTP, and WebAuthn, as well as device registration for OTP and WebAuthn.
+#
+# Classes:
+#   LoginView:
+#     Handles the multi-step login process. Manages state transitions between
+#     username, password, OTP, and WebAuthn authentication steps. Supports
+#     device checks, session management, and post-authentication redirects to
+#     registration if required devices are missing.
+#   RegistrationView:
+#     Base class for registration views. Provides a default template and
+#     redirect logic after registration steps.
+#   OTPRegistrationView:
+#     Handles OTP device registration. Generates a new OTP secret, displays a
+#     QR code for provisioning, and verifies the OTP code entered by the user
+#     before saving the device.
+#   WebAuthnRegistrationView:
+#     Handles WebAuthn device registration. Initiates WebAuthn registration
+#     ceremony, processes attestation response, and saves the credential data
+#     as a device for the user.
+#   EnumEncoder:
+#     Custom JSON encoder to serialize enum.Enum values as their underlying
+#     values, used for serializing WebAuthn options.
+#
+# Functions and Methods:
+#   - set_webauthn_options: Prepares WebAuthn authentication options for the
+#     frontend.
+#   - get_context_data: Prepares context for rendering templates, including
+#     forms and state.
+#   - username_step, password_step, otp_step, webauthn_step: Handle each step
+#     of the login process, including validation and state transitions.
+#   - post_authentication_steps: Redirects users to register missing devices
+#     after successful authentication.
+#   - next: Redirects to the next URL after registration.
+#   - get, post: Handle GET and POST requests for each view.
+#
+# Dependencies:
+#   - Django authentication and session framework
+#   - pyotp for OTP generation and verification
+#   - qrcode for QR code generation
+#   - fido2 for WebAuthn support
+#   - pickle for credential serialization
+#   - Custom forms and models for device management
+#
+# Note:
+#   This file assumes the presence of Device model and various forms for
+#   authentication and registration steps. It also assumes proper URL routing
+#   for registration endpoints.
+
 import json
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect

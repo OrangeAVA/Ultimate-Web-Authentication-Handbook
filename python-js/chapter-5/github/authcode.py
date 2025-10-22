@@ -1,3 +1,16 @@
+# Flask app implementing GitHub OAuth2 Authorization Code flow for dev use.
+# Requires GH_CLIENT_ID and GH_CLIENT_SECRET environment variables.
+# Serves static frontend files and a simple index at '/'.
+# /oauth/login redirects to GitHub authorize endpoint (scope: read:user).
+# /oauth/callback exchanges the code for a JSON access token and stores
+# it in an HttpOnly, Secure cookie named 'gh_access_token' (SameSite=Lax).
+# /oauth/logout clears the access token cookie.
+# /resource reads the cookie and calls GitHub's user API with the token.
+# Builds a TLS chain by concatenating server cert and intermediate CA, then
+# starts Flask on port 8443 with a TLS context using the chain file and key.
+# Notes: short request timeouts, hard-coded redirect_uri and cert paths, and
+# storing raw tokens in cookies is suitable only for demos, not production.
+
 import os
 import ssl
 from flask import Flask, redirect, request, make_response, jsonify

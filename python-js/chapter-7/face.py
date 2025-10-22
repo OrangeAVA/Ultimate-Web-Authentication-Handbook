@@ -1,3 +1,20 @@
+# face.py - Flask API for face similarity comparison using face_recognition
+#
+# This file implements a Flask web server that provides an API endpoint to
+# compare the similarity between two face images. It decodes base64-encoded
+# images, extracts face embeddings using the face_recognition library, and
+# computes the cosine similarity between the embeddings. The API returns a
+# similarity score or an error if a face cannot be detected in either image.
+#
+# Functions:
+#   decode_image(data_uri): Decodes a base64 data URI to a PIL Image.
+#   get_face_embedding(image): Extracts a face embedding from a PIL Image.
+#   compute_similarity(embedding1, embedding2): Computes cosine similarity
+#     between two face embeddings.
+#   serve_index(): Serves the frontend index.html file.
+#   compare_faces(): API endpoint to compare two face images and return their
+#     similarity score.
+
 import base64
 import io
 from flask import Flask, request, jsonify, send_from_directory

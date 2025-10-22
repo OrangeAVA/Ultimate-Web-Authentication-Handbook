@@ -1,3 +1,16 @@
+## Environment
+
+* We used `pyenv`, `virtualenv`, and `pip` to manage Python packages for
+  these samples. Use any package or environment manager you prefer. All
+  required packages and their versions are listed in `requirements.txt`.
+* We do not assume a specific operating system, but some packages
+  (for example, `pysaml` in [Chapter 4](chapter-4) or `face-recognition`
+  in [Chapter 7](chapter-7)) are easier to configure on Unix-like systems.
+  On Windows, consider using WSL 2 for those cases.
+* If you use `Visual Studio Code`, install the `Remote Development`
+  extension pack from Microsoft for a seamless WSL 2 experience. You can
+  also use the launcher scripts provided in that environment. 
+
 ## Differences from the [nodejs-js](../nodejs-js) samples
 
 Welcome to our Python and JavaScript sample projects. Below are key changes

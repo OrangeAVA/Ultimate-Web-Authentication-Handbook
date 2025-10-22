@@ -1,3 +1,32 @@
+# webauthn.py
+# A Flask-based WebAuthn (FIDO2) server implementation for registration and
+# authentication of users using public key credentials. This server provides
+# endpoints for beginning and finishing WebAuthn registration and login flows,
+# manages user and session data in-memory, and serves a static frontend.
+# Endpoints:
+#   - /hello (GET): Simple test endpoint.
+#   - /webauthn/register/begin (POST): Initiates WebAuthn registration for a
+#     user, returning public key credential creation options.
+#   - /webauthn/register/finish (POST): Completes registration, storing the
+#     user's credential.
+#   - /webauthn/login/begin (POST): Initiates authentication, returning public
+#     key credential request options.
+#   - /webauthn/login/finish (POST): Completes authentication, validating the
+#     credential.
+#   - / (GET): Serves the frontend index.html.
+# Key Components:
+#   - USERS: In-memory dictionary mapping usernames to their credentials.
+#   - SESSIONS: In-memory dictionary for tracking registration/login state.
+#   - enumsToString: Utility function to convert enum.Enum values to strings
+#     recursively in data structures.
+#   - SSL/TLS: Configures HTTPS using server and CA certificates.
+# Usage:
+#   Run this script to start a development HTTPS server on port 8443. Requires
+#   valid certificate and key files in the ../certs directory.
+# Note:
+#   This implementation is for demonstration and development purposes only.
+#   Do not use in production without proper security review and persistent
+#   storage for users and sessions.
 import enum
 import os
 import ssl

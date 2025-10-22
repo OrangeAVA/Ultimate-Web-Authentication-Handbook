@@ -1,28 +1,32 @@
-# This file implements a simple Flask web server with HTTP Basic Authentication using PBKDF2 password hashing.
+# This file implements a simple Flask web server with HTTP Basic Authentication
+# using PBKDF2 password hashing.
+#
+# main.py
+#
+# A Flask application that demonstrates HTTP Basic Authentication.
+# Passwords are stored as PBKDF2-HMAC-SHA1 hashes in a JSON file.
+# The application provides a single endpoint (/basicauth) that requires valid
+# credentials.
+#
+# Functions:
+#   load_users(): Loads user credentials from a JSON file.
+#   verify_password(stored_hash, password): Verifies a password against a stored
+#     PBKDF2 hash.
+#   authenticate(): Returns a 401 Unauthorized response with a Basic Auth
+#     challenge.
+#   basicauth(): Flask route handler for /basicauth, enforces Basic
+#     Authentication.
+#
+# Constants:
+#   PASSWORD_FILE: Path to the JSON file containing user credentials.
+#   PBKDF2_ITERATIONS: Number of iterations for PBKDF2 hashing.
+#   PBKDF2_SALT: Salt used for PBKDF2 hashing.
+#   PBKDF2_HASH_NAME: Hash algorithm used for PBKDF2.
+#
+# Usage:
+#   Run this file to start the Flask server on port 8080.
+#   Access /basicauth with HTTP Basic Authentication headers.
 
-"""
-main.py
-
-A Flask application that demonstrates HTTP Basic Authentication.
-Passwords are stored as PBKDF2-HMAC-SHA1 hashes in a JSON file.
-The application provides a single endpoint (/basicauth) that requires valid credentials.
-
-Functions:
-  load_users(): Loads user credentials from a JSON file.
-  verify_password(stored_hash, password): Verifies a password against a stored PBKDF2 hash.
-  authenticate(): Returns a 401 Unauthorized response with a Basic Auth challenge.
-  basicauth(): Flask route handler for /basicauth, enforces Basic Authentication.
-
-Constants:
-  PASSWORD_FILE: Path to the JSON file containing user credentials.
-  PBKDF2_ITERATIONS: Number of iterations for PBKDF2 hashing.
-  PBKDF2_SALT: Salt used for PBKDF2 hashing.
-  PBKDF2_HASH_NAME: Hash algorithm used for PBKDF2.
-
-Usage:
-  Run this file to start the Flask server on port 8080.
-  Access /basicauth with HTTP Basic Authentication headers.
-"""
 import json
 import base64
 import hashlib

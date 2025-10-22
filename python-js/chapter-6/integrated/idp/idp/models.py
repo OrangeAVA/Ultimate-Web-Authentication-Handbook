@@ -1,3 +1,26 @@
+"""
+This module defines the Device model for associating authentication devices
+with users in a Django application.
+
+Classes:
+  Device: Represents a device registered by a user for authentication
+  purposes. Each device is linked to a user and stores credential data
+  and device type information.
+
+Device Model Fields:
+  user (ForeignKey): References the user who owns the device. Deleting
+    the user cascades and deletes associated devices.
+  name (CharField): Optional human-readable name for the device.
+  credential_data (BinaryField): Stores credential or secret data
+    required for authentication (e.g., WebAuthn credential or OTP
+    secret).
+  device_type (CharField): Specifies the type of device, either 'otp'
+    (One-Time Password) or 'webauthn' (Web Authentication).
+
+Methods:
+  __str__(): Returns a string representation of the device, including
+    the username and device type.
+"""
 from django.db import models
 from django.conf import settings
 

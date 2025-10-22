@@ -1,3 +1,29 @@
+# This module defines Django form classes for user authentication and 
+# registration workflows, supporting multiple authentication methods.
+# Classes:
+#   UsernameForm:
+#     Form for capturing a username input. The username field is optional,
+#     accepts between 1 and 150 characters, and is rendered as a text input
+#     with a placeholder.
+#   PasswordForm:
+#     Form for capturing a password input. The password field is optional,
+#     accepts up to 128 characters, and is rendered as a password input with
+#     a placeholder.
+#   OTPForm:
+#     Form for capturing a one-time password (OTP). The OTP field is
+#     optional, accepts up to 6 characters, and is rendered as a password
+#     input with a placeholder.
+#   WebAuthnForm:
+#     Form for handling WebAuthn authentication responses. Contains a single
+#     required hidden field for the signed response.
+#   OTPRegistrationForm:
+#     Form for registering OTP-based authentication. Contains a required
+#     hidden field for the secret and an optional OTP field (up to 6
+#     characters) rendered as a text input with a placeholder.
+#   WebAuthnRegistrationForm:
+#     Form for registering WebAuthn credentials. Contains a single required
+#     hidden field for the attestation response.
+
 from django import forms
 
 class UsernameForm(forms.Form):

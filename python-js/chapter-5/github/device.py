@@ -1,3 +1,25 @@
+# github/device.py
+#
+# Implements the GitHub Device Authorization flow for authenticating users
+# via the OAuth device code grant. Allows a user to authenticate with GitHub
+# on a separate device and fetches the authenticated user's profile.
+#
+# Functions:
+#   request_device_code():
+#     Requests a device/user code pair from GitHub for user authorization.
+#
+#   poll_for_token(device_code, interval, expires_in):
+#     Polls GitHub for an access token using the device code until the user
+#     authorizes or the code expires.
+#
+#   fetch_user_profile(access_token):
+#     Fetches the authenticated user's GitHub profile using the access token.
+#
+#   doDeviceWorkflow():
+#     Orchestrates the device authorization flow, prints instructions for the
+#     user, and displays the authenticated user's profile.
+#
+# This file implements GitHub's Device Authorization OAuth flow in Python.
 import os
 import time
 import requests

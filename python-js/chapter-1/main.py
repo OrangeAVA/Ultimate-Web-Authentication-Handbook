@@ -1,29 +1,33 @@
-"""
-@fileoverview
-Flask server demonstrating basic authentication, cookie-based visit counting, and session management.
-
-This module sets up a Flask server with several routes:
-- `/hello`: Returns a simple "Hello, World!" message.
-- `/count`: Tracks the number of visits using a cookie named 'count'.
-- `/session`: Tracks the number of visits per session using a session cookie and an in-memory map.
-- `/basicauth`: Implements HTTP Basic Authentication for the user 'jdoe' with password 'password'.
-
-Endpoints:
-  /hello
-    Responds with "Hello, World!".
-
-  /count
-    Increments and returns the visit count using a cookie named 'count'.
-
-  /session
-    Increments and returns the visit count per session using a session cookie and a server-side map.
-
-  /basicauth
-    Implements HTTP Basic Authentication. Only authenticates user 'jdoe' with password 'password'.
-
-Server:
-  Listens on port 8080.
-"""
+# -----------------------------------------------------------------------------
+# Flask server demonstrating basic authentication, cookie-based visit counting,
+# and session management.
+#
+# This module sets up a Flask server with several routes:
+# - `/hello`: Returns a simple "Hello, World!" message.
+# - `/count`: Tracks the number of visits using a cookie named 'count'.
+# - `/session`: Tracks the number of visits per session using a session cookie
+#   and an in-memory map.
+# - `/basicauth`: Implements HTTP Basic Authentication for the user 'jdoe' with
+#   password 'password'.
+#
+# Endpoints:
+#   /hello
+#     Responds with "Hello, World!".
+#
+#   /count
+#     Increments and returns the visit count using a cookie named 'count'.
+#
+#   /session
+#     Increments and returns the visit count per session using a session cookie
+#     and a server-side map.
+#
+#   /basicauth
+#     Implements HTTP Basic Authentication. Only authenticates user 'jdoe' with
+#     password 'password'.
+#
+# Server:
+#   Listens on port 8080.
+# -----------------------------------------------------------------------------
 
 import base64
 import uuid
