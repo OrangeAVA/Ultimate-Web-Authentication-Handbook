@@ -105,7 +105,7 @@ app.post('/webauthn/register/finish', (req, res) => {
   }
 
   attresp = {
-    id: Base64.toUint8Array(req.body.id).buffer,
+    id: req.body.id,
     rawId: Base64.toUint8Array(req.body.rawId).buffer,
     response: {
       attestationObject: req.body.response.attestationObject,
@@ -182,7 +182,7 @@ app.post('/webauthn/login/finish', (req, res) => {
   }
 
   assresp = {
-    id: Base64.toUint8Array(req.body.id).buffer,
+    id: req.body.id,
     rawId: Base64.toUint8Array(req.body.rawId).buffer,
     response: {
       authenticatorData: req.body.response.authenticatorData,

@@ -1,0 +1,199 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ch1",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-1/main.py",
+      "cwd": "${workspaceFolder}/chapter-1",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "ch2",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-2/main.py",
+      "cwd": "${workspaceFolder}/chapter-2",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "ch3",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-3/main.py",
+      "cwd": "${workspaceFolder}/chapter-3",
+      "env": {
+        "CLIENT_AUTH": "true"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "ch4 idp",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/idp/idp.py",
+      "cwd": "${workspaceFolder}/chapter-4/idp",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch4 hr",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/hr/hr.py",
+      "cwd": "${workspaceFolder}/chapter-4/hr",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
+      "name": "ch4 finance",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-4/finance/finance.py",
+      "cwd": "${workspaceFolder}/chapter-4/finance",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "wait-for-ch4-idp"
+    },
+    {
+      "name": "ch5 github authcode",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/github/authcode.py",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "console": "integratedTerminal",
+      "env": {
+        "GH_CLIENT_ID": "",
+        "GH_CLIENT_SECRET": ""
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "ch5 github device",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/github/device.py",
+      "cwd": "${workspaceFolder}/chapter-5/github",
+      "console": "integratedTerminal",
+      "env": {
+        "GH_CLIENT_ID": ""
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "ch5 google oidc",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/google/google.py",
+      "cwd": "${workspaceFolder}/chapter-5/google",
+      "console": "integratedTerminal",
+      "env": {
+        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_SECRET": ""
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "ch5 idp (Django)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/idp/manage.py",
+      "cwd": "${workspaceFolder}/chapter-5/idp",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch5 pkce resource server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/pkce/resource.py",
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "ch5 pkce client",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-5/pkce/client.py",
+      "cwd": "${workspaceFolder}/chapter-5/pkce",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "preLaunchTask": "wait-for-ch5-idp-and-resource"
+    },
+    {
+      "name": "ch6 otp",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/otp/otp.py",
+      "cwd": "${workspaceFolder}/chapter-6/otp",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "ch6 webauthn",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/webauthn/webauthn.py",
+      "cwd": "${workspaceFolder}/chapter-6/webauthn",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "ch6 integrated idp",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/integrated/idp/manage.py",
+      "cwd": "${workspaceFolder}/chapter-6/integrated/idp",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "ch6 integrated mysrv",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-6/integrated/mysrv.py",
+      "cwd": "${workspaceFolder}/chapter-6/integrated",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },  
+    {
+      "name": "ch7",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/chapter-7/face.py",
+      "cwd": "${workspaceFolder}/chapter-7",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ch4",
+      "configurations": [
+        "ch4 idp",
+        "ch4 finance",
+        "ch4 hr"
+      ]
+    },
+    {
+      "name": "ch5 pkce",
+      "configurations": [
+        "ch5 idp (Django)",
+        "ch5 pkce resource server",
+        "ch5 pkce client"
+      ]
+    },
+    {
+      "name": "ch6 integrated",
+      "configurations": [
+        "ch6 integrated idp",
+        "ch6 integrated mysrv"
+      ]
+    }
+  ]
+}

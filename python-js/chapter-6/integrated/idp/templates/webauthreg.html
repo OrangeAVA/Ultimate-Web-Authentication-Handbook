@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebAuthn Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Styles adjusted to match the look-and-feel used by ./login.html -->
+  <style>
+    :root{--bg:#f4f6fb;--card-bg:#ffffff;--muted:#69707a;--brand:#0b5fff;--danger:#d32f2f;--shadow:0 6px 24px rgba(18,38,63,0.08);--radius:10px;--gap:14px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#f7f9ff 0%,var(--bg) 100%);display:flex;align-items:center;justify-content:center;padding:32px;color:#111827;}
+    .card{width:420px;max-width:calc(100% - 48px);background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 28px;box-sizing:border-box;}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+    .brand .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#6b9cff);display:inline-block;}
+    h2{margin:0 0 6px 0;font-size:1.25rem;font-weight:600;color:#0f1724;}
+    p.lead{margin:0 0 18px 0;color:var(--muted);font-size:0.98rem;line-height:1.4;}
+    .actions{display:flex;gap:12px;justify-content:center;margin-top:10px;}
+    .btn{padding:10px 18px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:0.95rem;transition:all .14s ease;}
+    .btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(11,95,255,0.12);}
+    .btn-primary:hover{transform:translateY(-1px);}
+    .btn-secondary{background:#f3f6fb;color:#111827;}
+    .btn-secondary:hover{background:#e9eefc;}
+    .status{margin-top:14px;min-height:24px;color:var(--danger);font-size:0.95rem;text-align:center;}
+    @media (max-width:480px){.card{padding:20px;}h2{font-size:1.1rem;}}
+  </style>
+</head>
+<body>
+  <script src="https://unpkg.com/js-base64/base64.js"></script>
+  <div class="card" role="main" aria-labelledby="webauthn-title">
+    <div class="brand" aria-hidden="true">
+      <span class="logo"></span>
+      <div style="line-height:1">
+        <div style="font-size:0.85rem;color:var(--muted)">Identity Provider</div>
+        <div style="font-size:0.9rem;color:#0f1724;font-weight:600">FIDO2 Registration</div>
+      </div>
+    </div>
+
+    <h2 id="webauthn-title">Register FIDO2 Credential</h2>
+    <p class="lead">
+      Please register your FIDO2 credential (security key or biometrics). Follow the browser/device prompt to complete registration.
+    </p>
+
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="actions">
+        <button type="submit" name="cancel" value="1" class="btn btn-secondary">Skip</button>
+        <!-- keep a primary button for clarity (it simply triggers registration, but registration is also auto-started) -->
+        <button type="submit" class="btn btn-primary" id="start-btn" onclick="register();">Register</button>
+      </div>
+    </form>
+
+    <div id="webauthn-status" class="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    async function register(){
+      const publicKey = {{ public_key_options | safe }};
+      publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
+      const textEncoder = new TextEncoder();
+      publicKey.user.id = textEncoder.encode(publicKey.user.id);
+
+      if (Array.isArray(publicKey.excludeCredentials)) {
+        for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
+          const cred = publicKey.excludeCredentials[i];
+          cred.id = Base64.toUint8Array(cred.id);
+        }
+      }
+
+      console.log("Starting registration with publicKey:", publicKey);
+
+      let cred = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          cred = await window.navigator.credentials.create({publicKey});
+          if (cred) break;
+        } catch (e) {
+          console.error(`Registration attempt ${attempt} failed:`, e);
+          document.getElementById('webauthn-status').textContent = `Attempt ${attempt} failed. ${3 - attempt} tries left.`;
+          // small pause before retry
+          await new Promise(r => setTimeout(r, 600));
+        }
+      }
+
+      if (!cred) {
+        document.getElementById('webauthn-status').textContent = 'Registration failed after multiple attempts. Skipping registration.';
+        document.getElementsByName('cancel')[0].submit();
+        return;
+      } else {
+        document.getElementById('webauthn-status').textContent = 'Created the credential, submitting...';
+      }
+
+      const attestationObject = Base64.fromUint8Array(new Uint8Array(cred.response.attestationObject), true);
+      const clientDataJSON = Base64.fromUint8Array(new Uint8Array(cred.response.clientDataJSON), true);
+
+      const cc = {
+        id: cred.id,
+        rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
+        response: {attestationObject, clientDataJSON},
+        type: 'public-key'
+      };
+
+      document.querySelector('input[name="attestation_response"]').value = JSON.stringify(cc);
+      document.querySelector('form').submit();
+    }
+  </script>
+</body>
+</html>

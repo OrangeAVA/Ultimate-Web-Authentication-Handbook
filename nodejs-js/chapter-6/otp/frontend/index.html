@@ -8,8 +8,8 @@
   <head>
   </head>
   <body>
-    <script src="/@otplib/preset-browser/buffer.js"></script>
-    <script src="/@otplib/preset-browser/index.js"></script>
+    <script src="https://unpkg.com/@otplib/preset-browser/buffer.js"></script>
+    <script src="https://unpkg.com/@otplib/preset-browser/index.js"></script>
     <script>
       var AUTH_SECRET="0123456789ABCDEF";
       var AUTH_TYPE="totp";
@@ -26,7 +26,7 @@
           intervalID = setInterval(function(){
               const secondsSinceEpoch = Math.floor(Date.now() / 1000);
               const counter = Math.floor(secondsSinceEpoch / AUTH_PERIOD);
-              timer = (counter+1)*AUTH_PERIOD - secondsSinceEpoch;
+              timer = otplib.authenticator.timeRemaining(); 
               if (counter != oldcounter){
                 document.getElementById("count").innerText = counter;
                 const token = otplib.authenticator.generate(AUTH_SECRET);
@@ -71,7 +71,9 @@
 
       function hotpCompute(){
         if (AUTH_TYPE == "hotp"){
-          const token = otplib.hotp.generate(AUTH_SECRET, AUTH_COUNTER);
+          const hex_secret = otplib.authenticator.decode(AUTH_SECRET);
+          const decoded_secret = Buffer.from(hex_secret, 'hex').toString('binary');
+          const token = otplib.hotp.generate(decoded_secret, AUTH_COUNTER);
           document.getElementById("otp").innerText = token;
           AUTH_COUNTER += 1;
           document.getElementById("count").innerText = AUTH_COUNTER;

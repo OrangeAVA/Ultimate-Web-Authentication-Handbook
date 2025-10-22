@@ -1,0 +1,9 @@
+{
+  "editor.rulers": [
+    80, 120
+  ],
+  "python.analysis.extraPaths": [
+    "./chapter-5/idp/idp",
+    "./chapter-5/idp"
+  ]
+}

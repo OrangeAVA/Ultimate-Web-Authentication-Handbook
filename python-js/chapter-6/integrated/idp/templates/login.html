@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; }
+    .login-container { max-width: 350px; margin: 80px auto; background: #fff; padding: 30px 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .login-container h2 { margin-bottom: 20px; text-align: center; }
+    .login-container label { display: block; margin-bottom: 6px; font-weight: bold; }
+    .login-container input[type="text"], .login-container input[type="password"] { width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; }
+    .login-container button { width: 100%; padding: 10px; background: #0078d7; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    .login-container button:hover { background: #005fa3; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    {% if error %}
+      <div name="error" style="color: red; margin-bottom: 16px;">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if state != 'webauthn' %}
+      <button type="submit">Next</button>
+      {% else %}
+      <button type="submit" onclick="validate();">Validate FIDO2</button>
+      {% endif %}
+      <button type="submit" name="cancel" value="1" style="background: #ccc; color: #333; margin-top: 8px;">Cancel</button>
+    </form>
+  </div>
+  {% if state == 'webauthn' %}
+  <script src="https://unpkg.com/js-base64/base64.js"></script>
+  <script>
+    async function validate() {
+      const publicKey = {{public_key_options | safe}};
+      console.log("Auth PublicKey:", publicKey);
+      publicKey.challenge = Base64.toUint8Array(publicKey.challenge);
+
+      if (Array.isArray(publicKey.allowCredentials)) {
+        for (let i = 0; i < publicKey.allowCredentials.length; i++) {
+          const cred = publicKey.allowCredentials[i];
+          cred.id = Base64.toUint8Array(cred.id);
+        }
+      }
+
+      let cred;
+      try {
+        cred = await window.navigator.credentials.get({publicKey});
+      } catch (err) {
+        console.error("WebAuthn get() failed:", err);
+        let errorDiv = document.querySelector('div[name="error"]');
+        errorDiv.textContent = err && err.message ? err.message : String(err);
+        return;
+      }
+      console.log(cred);
+
+      const authenticatorData = Base64.fromUint8Array(new Uint8Array(cred.response.authenticatorData), true);
+      const clientDataJSON = Base64.fromUint8Array(new Uint8Array(cred.response.clientDataJSON), true);
+      const signature = Base64.fromUint8Array(new Uint8Array(cred.response.signature), true);
+
+      const cc = {
+        id: cred.id,
+        rawId: Base64.fromUint8Array(new Uint8Array(cred.rawId), true),
+        response: {authenticatorData, clientDataJSON, signature},
+        type: 'public-key'
+      };
+
+      document.querySelector('input[name="signed_response"]').value = JSON.stringify(cc);
+      document.querySelector('form').submit();
+    }
+  </script>
+  {% endif %}
+</body>
+</html>
