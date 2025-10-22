@@ -12,6 +12,7 @@ numpy==2.3.4
 Pillow==12.0.0
 PyJWT==2.10.1
 PyJWT==2.10.1
+pyopenssl==25.3.0
 pyotp==2.9.0
 pysaml2==7.5.4
 qrcode==8.2
