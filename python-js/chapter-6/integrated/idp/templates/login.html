@@ -26,7 +26,7 @@
       {% if state != 'webauthn' %}
       <button type="submit">Next</button>
       {% else %}
-      <button type="submit" onsubmit="validate();">Validate FIDO2</button>
+      <button type="submit" onclick="validate();">Validate FIDO2</button>
       {% endif %}
       <button type="submit" name="cancel" value="1" style="background: #ccc; color: #333; margin-top: 8px;">Cancel</button>
     </form>

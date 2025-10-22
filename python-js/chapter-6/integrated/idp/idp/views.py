@@ -336,5 +336,5 @@ class WebAuthnRegistrationView(RegistrationView):
       messages.success(request, "WebAuthn device registered successfully.")
       return self.next(request)
     else:
-      messages.error(request, "Invalid input.")
-      return self.next(request)
+      context["error"] = "Invalid input."
+      return render(request, self.template_name, context)
