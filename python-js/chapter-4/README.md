@@ -13,3 +13,5 @@
 4. While SAML only provides guidance for message passing in SLO, a good SLO
   implementation requires robust error handling for failures in distributed
   systems.
+
+5. We have not implemented the listing of active sessions on the IDP UI. 

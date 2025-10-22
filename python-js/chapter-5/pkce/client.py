@@ -55,7 +55,7 @@ import urllib.parse
 
 OIDC_DISCOVERY_URL = "https://idp.local:8443/oidc/.well-known/openid-configuration"
 REDIRECT_URI = "https://mysrv.local:8444/"
-CLIENT_ID = "911337"  # Replace with your client ID
+CLIENT_ID = "XXXXXX"  # Replace with your client ID
 SCOPES = "openid profile email offline_access"
 
 SERVER_ROOT = os.path.join(os.path.dirname(__file__), "..", "certs", "sroot.crt")

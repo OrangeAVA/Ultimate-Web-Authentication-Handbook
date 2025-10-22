@@ -18,11 +18,6 @@ def _userinfo(request):
   info = userinfo(None, user)
   return JsonResponse(info)
 
-def index(request):
-  if request.user.is_authenticated:
-    return HttpResponseRedirect('/userinfo/')
-  return HttpResponse('Welcome to the Django OIDC IDP! <a href="/oidc/authorize/">Login</a>')
-
 def logout(request):
   django_logout(request)
   return HttpResponseRedirect('/')
@@ -31,6 +26,6 @@ urlpatterns = [
   path('oidc/', include(oidc_provider_urls, namespace='oidc_provider')),
   path('userinfo/', _userinfo),
   path('accounts/', include('django.contrib.auth.urls')),
+  path('accounts/profile/', _userinfo),
   path('admin/', admin.site.urls),
-  path('', index),
 ]
